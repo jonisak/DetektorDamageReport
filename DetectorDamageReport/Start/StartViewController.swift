@@ -14,7 +14,13 @@ import Alamofire
 
 
 class StartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    var trainDTOList = [TrainDTO]();
+    var currentPage = 1;
+    var totalPages = 0;
+    var pageSize = 10;
+    var trainListDTO = [TrainListDTO]();
+     var isLoading:Bool = false;
+    let kLoadingCellTag2 = 1273;
+
     var tblView: UITableView = {
         let t = UITableView()
         t.translatesAutoresizingMaskIntoConstraints = false;
@@ -25,6 +31,10 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
+    
+        let filterBtn = UIBarButtonItem(title: "Filtrera", style: .done, target: self, action: #selector(self.openFilterViewController))
+        self.navigationItem.rightBarButtonItem = filterBtn
+        
         
         tblView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         tblView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
@@ -35,84 +45,224 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tblView.dataSource = self
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = UITableView.automaticDimension
-
-        /*
-        AF.request("http://104.40.239.29/Detectordamagereport/api/Train/GetUserTrains", method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseDecodable { (response: DataResponse<[TrainDTO]>) in
-           // print(response.value?.TrainId)
-            print("Result: \(response.result)")
-            // response serialization result
-
-            if let trainDTO = response.value
-            {
-                print(trainDTO.count)
-                
-            }
-            print(response.error)
-            
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
+        tblView.addSubview(refreshControl)
+        self.fetchData()
+        
+    }
+ 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+      //  self.fetchData()
+    }
+    
+    
+    @objc func openFilterViewController(){
+        let filterTrainViewController = FilterTrainViewController()
+        let nav = UINavigationController(rootViewController: filterTrainViewController)
+        self.present(nav, animated: true, completion: nil)
+    }
+    
+    
+    @objc func refresh(_ refreshControl: UIRefreshControl) {
+        currentPage = 1;
+        pageSize = 50;
+        self.trainListDTO.removeAll()
+        refreshControl.endRefreshing()
+        self.tblView.reloadData();
+        
+        fetchData();
+        
+    }
+    
+    
+    func fetchData(){
+    
+        
+        
+        if self.isLoading {
+            return;
         }
-*/
 
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+
+        
+        //let pagingDTO: PagingDTO  = PagingDTO()
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.MaxResultCount = 10000
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.Page = currentPage
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.PageSize = pageSize
+        
+        var dict = [String: Any]()
+        //var jsonSring = ""
+        do {
+          //  let encoder = JSONEncoder()
+          //  let data = try encoder.encode(pagingDTO)
+          //  jsonSring = String(data: data, encoding: .utf8)!
+            dict = try (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.asDictionary()
+        }catch {
+            print("Unexpected error: \(error).")
+            return
+        }
+        
+    
+
+
+        
         let headers: HTTPHeaders = [.authorization(username: "test", password: "1111")]
-        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "Train", method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "GetUserTrains", method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
             print("Request: \(String(describing: response.request))")   // original url request
             print("Response: \(String(describing: response.response))") // http url response
             print("Result: \(response.result)")                         // response serialization result
             
+            self.isLoading = false;
+            print(response.error);
             
             if let d = response.data{
                 do {
                     let decoder = JSONDecoder() //or any other Decoder
-                    let t = try? decoder.decode([TrainDTO].self, from: d)
-                    if let tr = t
-                    {
-                        self.trainDTOList = tr;
-                        self.tblView.reloadData()
-                    }
-                } catch { print(error) }
+                    let tr = try decoder.decode([TrainListDTO].self, from: d)
+                    //if let tr = t
+                    //{
+                        self.trainListDTO.append(contentsOf: tr)
 
+                        if(self.trainListDTO.count>0 && self.currentPage==1)
+                        {
+                            self.totalPages =  (self.trainListDTO[0].TotalCount! + self.pageSize - 1) / self.pageSize;
+                        }
+
+                        
+                        DispatchQueue.main.async {
+                            self.tblView.reloadData()
+                        }
+                    //}
+                } catch {
+                    print(error)
+                    
+                }
+                
             }
         }
+        
     }
- 
+    func realoadData()
+    {
+        trainListDTO.removeAll();
+        currentPage=1;
+        pageSize=10;
+        self.fetchData()
+    }
+    
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if(self.trainListDTO.count==0)
+        {
+            return 0;
+        }
+        
+        if(self.currentPage==0)
+        {
+            return 1;
+        }
+        
+        if (self.currentPage<self.totalPages) {
+            return self.trainListDTO.count+1;
+        }
+        return self.trainListDTO.count
+    }
+    
+    /*
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
        return self.trainDTOList.count
     }
-    
+    */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell : TrainTableViewCell! = tableView.dequeueReusableCell(withIdentifier: "CELL") as?TrainTableViewCell
         
-        if (cell == nil) {
-            cell = TrainTableViewCell.init(style: UITableViewCell.CellStyle.default,
-                                                  reuseIdentifier:"CELL");
+        if ((indexPath as NSIndexPath).row < self.trainListDTO.count) {
+            return self.beerCellForIndexPath(indexPath);
+        }else{
+            return self.loadingCell();
         }
-        
-        cell.sentLabel.text = "Skickat: " + self.trainDTOList[indexPath.row].MessageSent
-        cell.detectorLabel.text = "Detektor: " + self.trainDTOList[indexPath.row].Detector
-        cell.trainOperatorLabel.text = self.trainDTOList[indexPath.row].TrainOperator
-        cell.trainNumberLabel.text = "Tågnummer: " + self.trainDTOList[indexPath.row].TrainNumber
-        cell.trainDirectionLabel.text = self.trainDTOList[indexPath.row].TrainDirection + " riktning"
-        cell.vehicleCountLabel.text = String(self.trainDTOList[indexPath.row].VehicleCount) + " st fordon"
-        cell.accessoryType = .disclosureIndicator
-        
+    }
+    
+    func loadingCell()->UITableViewCell
+    {
+        let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier:nil)
+        cell.contentView.backgroundColor = UIColor(red: 228.0/255, green: 212.0/255, blue: 203.0/255, alpha: 0.8)
+        let activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
+        activityIndicator.center = cell.center
+        cell.addSubview(activityIndicator);
+        activityIndicator.startAnimating()
+        cell.tag = kLoadingCellTag2;
         return cell;
     }
     
+    
+    
+    func beerCellForIndexPath(_ indexPath: IndexPath)  -> UITableViewCell
+    {
+        var cell : TrainTableViewCell! = self.tblView.dequeueReusableCell(withIdentifier: "CELL") as?TrainTableViewCell
+        
+        if (cell == nil) {
+            cell = TrainTableViewCell.init(style: UITableViewCell.CellStyle.default,
+                                           reuseIdentifier:"CELL");
+        }
+        
+        cell.layoutViews(trainListDTO: self.trainListDTO[indexPath.row])
+        cell.sentLabel.text = "Datum: " + self.trainListDTO[indexPath.row].MessageSent
+        cell.detectorLabel.text = "Detektor: " + self.trainListDTO[indexPath.row].Detector
+        cell.trainOperatorLabel.text = self.trainListDTO[indexPath.row].TrainOperator
+        cell.trainNumberLabel.text = "Tågnummer: " + self.trainListDTO[indexPath.row].TrainNumber
+        cell.trainDirectionLabel.text = self.trainListDTO[indexPath.row].TrainDirection + " riktning"
+        cell.vehicleCountLabel.text = String(self.trainListDTO[indexPath.row].VehicleCount) + " st fordon"
+        cell.accessoryType = .disclosureIndicator
+        
+        
+        if self.trainListDTO[indexPath.row].isHotBoxHotWheel
+        {
+            cell.messageTypeLabel.text = "Varmgång/Tjuvbroms"
+        }
+        if self.trainListDTO[indexPath.row].isWheelDamage
+        {
+            cell.messageTypeLabel.text = "Hjulskada"
+        }
+        
+        
+        if(indexPath.row == self.trainListDTO.count-1)
+        {
+            if self.currentPage <= self.totalPages
+            {
+                self.currentPage = self.currentPage + 1;
+                self.fetchData()
+            }
+        }
+        return cell;
+    }
+        
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if (cell.tag == kLoadingCellTag2) {
+            self.currentPage += 1;
+            self.fetchData()
+            cell.tag = 99
+        }
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 200
+            return 250
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ve = VehicleViewController();
-        ve.trainDTOList = self.trainDTOList;
+        //ve.trainDTOList = self.trainListDTO;
         ve.selectedTraindIndex = indexPath.row
         self.navigationController?.pushViewController(ve, animated: true);
     }
     
     
- 
- /*
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
- */
+
 }

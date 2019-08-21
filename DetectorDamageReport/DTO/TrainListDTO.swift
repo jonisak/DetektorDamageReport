@@ -1,15 +1,15 @@
 //
-//  TrainDTO.swift
+//  TrainListDTO.swift
 //  DetectorDamageReport
 //
-//  Created by Jonas Isaksson on 2019-07-18.
+//  Created by Jonas Isaksson on 2019-08-21.
 //  Copyright © 2019 Jonas Isaksson. All rights reserved.
 //
 
 import Foundation
-struct TrainDTO: Decodable {
-  
-    
+
+struct TrainListDTO: Decodable {
+    var TotalCount : Int?
     var TrainId: CLong
     var TrainOperator:String
     var TrainNumber:String
@@ -19,11 +19,7 @@ struct TrainDTO: Decodable {
     var Detector:String
     var isWheelDamage:Bool
     var isHotBoxHotWheel:Bool
-    var Vehicles: [VehicleDTO]?
-    var AlertList: [AlertDTO]?
-
-
-
+    var TrainHasAlarmItem:Bool
 }
 
 

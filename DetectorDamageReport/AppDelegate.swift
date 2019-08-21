@@ -13,18 +13,35 @@ import Alamofire
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var WebapiURL = "http://52.178.108.96/Detectordamagereport/api/"
+    var WebapiURL = "http://13.94.134.22/Detectordamagereport/api/"
+    var trainFilterDTO : TrainFilterDTO!
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        var deviceTypeList = [DeviceTypeDTO]()
+        deviceTypeList.append(DeviceTypeDTO(deviceType: "HOTBOXHOTWHEEL", deviceTypeDisplayName: "Varmgång/Tjuvbroms detektor", selected: true))
+        deviceTypeList.append(DeviceTypeDTO(deviceType: "WHEELDAMAGE", deviceTypeDisplayName: "Hjulskadedetektor", selected: true))
+
+        self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList)
+        
+
+
+        //self.trainFilterDTO(
+        //self.trainFilterDTO(trainFilterDTO)
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         //self.window?.rootViewController = StartViewController()
         self.window?.rootViewController = TabBarViewController()
         self.window?.makeKeyAndVisible()
-        
+
+
         return true
     }
 
+    
+    
+    
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -49,4 +66,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
+
+
+
+
+
+
 

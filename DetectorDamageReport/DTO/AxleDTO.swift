@@ -12,7 +12,7 @@ import Foundation
 struct AxleDTO: Decodable {
     var AxleId: CLong
     var AxleNumber : Int?
-    let WheelDamageMeasureDataAxleList: [WheelDamageMeasureDataAxleDTO]
+    //let WheelDamageMeasureDataAxleList: [WheelDamageMeasureDataAxleDTO]
     let WheelList: [WheelDTO]?
     let AlertList: [AlertDTO]?
 }

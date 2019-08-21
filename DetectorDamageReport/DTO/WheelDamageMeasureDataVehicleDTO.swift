@@ -9,7 +9,7 @@
 import Foundation
 
 struct WheelDamageMeasureDataVehicleDTO: Decodable {
-    var WheelDamageMeasureDataAxleId: CLong
+    var WheelDamageMeasureDataVehicleId: CLong
     var FrontRearLoadRatio : Float
     var LeftRightLoadRatio : Float
     var WeightInTons : Float

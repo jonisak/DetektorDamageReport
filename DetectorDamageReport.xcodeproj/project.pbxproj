@@ -18,7 +18,10 @@
 		5B08540322E6F59C00CFDB2E /* VehicleDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B08540222E6F59C00CFDB2E /* VehicleDetailTableViewCell.swift */; };
 		5B298CDE22E1ED4000B1A852 /* VehicleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B298CDD22E1ED4000B1A852 /* VehicleViewController.swift */; };
 		5B298CE022E1F4F300B1A852 /* VehicleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B298CDF22E1F4F300B1A852 /* VehicleTableViewCell.swift */; };
+		5B409639230536EE00C28AF1 /* DeviceTypeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B409638230536EE00C28AF1 /* DeviceTypeDTO.swift */; };
 		5B4EFCCB22E73A070066E8E5 /* LabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4EFCCA22E73A070066E8E5 /* LabelExtension.swift */; };
+		5B5E0D5B22FD5AE200794F2C /* StructExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E0D5A22FD5AE200794F2C /* StructExtension.swift */; };
+		5B5E0D5D22FDAEEB00794F2C /* FilterTrainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E0D5C22FDAEEB00794F2C /* FilterTrainViewController.swift */; };
 		5B7CD9BA22E1D68100AABB44 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7CD9B922E1D68100AABB44 /* TabBarViewController.swift */; };
 		5B7FF66E22E08D68007C40D6 /* TrainDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7FF66D22E08D68007C40D6 /* TrainDTO.swift */; };
 		5B7FF67022E08F57007C40D6 /* VehicleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7FF66F22E08F57007C40D6 /* VehicleDTO.swift */; };
@@ -27,6 +30,8 @@
 		5B82923D22DDD5EE0060B477 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B82923B22DDD5EE0060B477 /* LaunchScreen.storyboard */; };
 		5B82924522DDD72E0060B477 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B82924422DDD72E0060B477 /* StartViewController.swift */; };
 		5B82924722DDDB8A0060B477 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 5B82924622DDDB8A0060B477 /* Podfile */; };
+		5BBA39902300A9CE005822D2 /* TrainFilterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA398F2300A9CE005822D2 /* TrainFilterDTO.swift */; };
+		5BF721E5230DE71900CF6228 /* TrainListDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF721E4230DE71900CF6228 /* TrainListDTO.swift */; };
 		5F32951AE4BDF9D551C19771 /* Pods_DetectorDamageReport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81EAF607BB546D6942CC74DA /* Pods_DetectorDamageReport.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +47,10 @@
 		5B08540222E6F59C00CFDB2E /* VehicleDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleDetailTableViewCell.swift; sourceTree = "<group>"; };
 		5B298CDD22E1ED4000B1A852 /* VehicleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleViewController.swift; sourceTree = "<group>"; };
 		5B298CDF22E1F4F300B1A852 /* VehicleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleTableViewCell.swift; sourceTree = "<group>"; };
+		5B409638230536EE00C28AF1 /* DeviceTypeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTypeDTO.swift; sourceTree = "<group>"; };
 		5B4EFCCA22E73A070066E8E5 /* LabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelExtension.swift; sourceTree = "<group>"; };
+		5B5E0D5A22FD5AE200794F2C /* StructExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructExtension.swift; sourceTree = "<group>"; };
+		5B5E0D5C22FDAEEB00794F2C /* FilterTrainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTrainViewController.swift; sourceTree = "<group>"; };
 		5B7CD9B922E1D68100AABB44 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		5B7FF66D22E08D68007C40D6 /* TrainDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDTO.swift; sourceTree = "<group>"; };
 		5B7FF66F22E08F57007C40D6 /* VehicleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleDTO.swift; sourceTree = "<group>"; };
@@ -53,6 +61,8 @@
 		5B82923E22DDD5EE0060B477 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B82924422DDD72E0060B477 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		5B82924622DDDB8A0060B477 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		5BBA398F2300A9CE005822D2 /* TrainFilterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilterDTO.swift; sourceTree = "<group>"; };
+		5BF721E4230DE71900CF6228 /* TrainListDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainListDTO.swift; sourceTree = "<group>"; };
 		5FB7BA687E3FD659F46244BC /* Pods-DetectorDamageReport.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DetectorDamageReport.debug.xcconfig"; path = "Target Support Files/Pods-DetectorDamageReport/Pods-DetectorDamageReport.debug.xcconfig"; sourceTree = "<group>"; };
 		81EAF607BB546D6942CC74DA /* Pods_DetectorDamageReport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DetectorDamageReport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6C4ED9406C15B4DF74C1F01 /* Pods-DetectorDamageReport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DetectorDamageReport.release.xcconfig"; path = "Target Support Files/Pods-DetectorDamageReport/Pods-DetectorDamageReport.release.xcconfig"; sourceTree = "<group>"; };
@@ -76,6 +86,7 @@
 				5B298CDC22E1ED2300B1A852 /* Vehicle */,
 				5B82924422DDD72E0060B477 /* StartViewController.swift */,
 				5B00C0C222E1BFBB00AFA636 /* TrainTableViewCell.swift */,
+				5B5E0D5C22FDAEEB00794F2C /* FilterTrainViewController.swift */,
 			);
 			path = Start;
 			sourceTree = "<group>";
@@ -92,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				5B4EFCCA22E73A070066E8E5 /* LabelExtension.swift */,
+				5B5E0D5A22FD5AE200794F2C /* StructExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -109,6 +121,8 @@
 		5B7FF66C22E08D2E007C40D6 /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				5BBA398E2300A9A3005822D2 /* TrainFilters */,
+				5BF721E4230DE71900CF6228 /* TrainListDTO.swift */,
 				5B7FF66D22E08D68007C40D6 /* TrainDTO.swift */,
 				5B7FF66F22E08F57007C40D6 /* VehicleDTO.swift */,
 				5B0853F422E6DD9C00CFDB2E /* AlertDTO.swift */,
@@ -154,6 +168,15 @@
 				5B82923E22DDD5EE0060B477 /* Info.plist */,
 			);
 			path = DetectorDamageReport;
+			sourceTree = "<group>";
+		};
+		5BBA398E2300A9A3005822D2 /* TrainFilters */ = {
+			isa = PBXGroup;
+			children = (
+				5BBA398F2300A9CE005822D2 /* TrainFilterDTO.swift */,
+				5B409638230536EE00C28AF1 /* DeviceTypeDTO.swift */,
+			);
+			path = TrainFilters;
 			sourceTree = "<group>";
 		};
 		805C543F76E3A720321337F7 /* Frameworks */ = {
@@ -274,12 +297,14 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DetectorDamageReport/Pods-DetectorDamageReport-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -294,9 +319,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B298CE022E1F4F300B1A852 /* VehicleTableViewCell.swift in Sources */,
+				5B5E0D5B22FD5AE200794F2C /* StructExtension.swift in Sources */,
 				5B0853FD22E6E46400CFDB2E /* WheelDamageMeasureDataVehicleDTO.swift in Sources */,
 				5B4EFCCB22E73A070066E8E5 /* LabelExtension.swift in Sources */,
 				5B08540322E6F59C00CFDB2E /* VehicleDetailTableViewCell.swift in Sources */,
+				5BBA39902300A9CE005822D2 /* TrainFilterDTO.swift in Sources */,
 				5B0853F722E6DE1B00CFDB2E /* AxleDTO.swift in Sources */,
 				5B0853FF22E6E4B200CFDB2E /* WheelDamageMeasureDataWheelDTO.swift in Sources */,
 				5B7FF66E22E08D68007C40D6 /* TrainDTO.swift in Sources */,
@@ -307,8 +334,11 @@
 				5B0853F922E6E00F00CFDB2E /* HotBoxHotWheelMeasureWheelDataDTO.swift in Sources */,
 				5B0853F522E6DD9C00CFDB2E /* AlertDTO.swift in Sources */,
 				5B00C0C322E1BFBB00AFA636 /* TrainTableViewCell.swift in Sources */,
+				5B409639230536EE00C28AF1 /* DeviceTypeDTO.swift in Sources */,
 				5B7CD9BA22E1D68100AABB44 /* TabBarViewController.swift in Sources */,
+				5B5E0D5D22FDAEEB00794F2C /* FilterTrainViewController.swift in Sources */,
 				5B82924522DDD72E0060B477 /* StartViewController.swift in Sources */,
+				5BF721E5230DE71900CF6228 /* TrainListDTO.swift in Sources */,
 				5B0853FB22E6E41100CFDB2E /* WheelDamageMeasureDataAxleDTO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

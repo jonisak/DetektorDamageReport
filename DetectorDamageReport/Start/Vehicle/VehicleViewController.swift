@@ -8,9 +8,13 @@
 
 import UIKit
 
-class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class VehicleViewController: UIViewController//, UITableViewDelegate, UITableViewDataSource
+{
 
-    var trainDTOList = [TrainDTO]();
+    //var trainDTOList = [TrainDTO]();
+    
+    var trainListDTO : TrainListDTO!
+    
     var selectedTraindIndex = 0;
     var tblView: UITableView = {
         let t = UITableView()
@@ -22,7 +26,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
-        
+        /*
         tblView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         tblView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         tblView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -34,12 +38,12 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         tblView.dataSource = self
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = 100
-        
-        
-        
-        
-        
+ */
     }
+
+    
+    /*
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let ve = self.trainDTOList[selectedTraindIndex].Vehicles
@@ -91,6 +95,21 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             labelArr.append(getCellLabel(labelText: "Antal axlar: " + String(ve.AxleCount), indentLevel: IndentLevelLabel.Level0))
 
             
+            if ve.WheelDamageMeasureDataVehicleList.count>0
+            {
+                labelArr.append(getCellLabel(labelText: "Lastfördelning", indentLevel: IndentLevelLabel.Level0))
+
+                for item in ve.WheelDamageMeasureDataVehicleList
+                {
+                    labelArr.append(getCellLabel(labelText: "Fram/Bak" + String(item.FrontRearLoadRatio), indentLevel: IndentLevelLabel.Level1))
+                    labelArr.append(getCellLabel(labelText: "Vänster/Höger" + String(item.LeftRightLoadRatio), indentLevel: IndentLevelLabel.Level1))
+                    labelArr.append(getCellLabel(labelText: "Vikt" + String(item.WeightInTons) + " ton", indentLevel: IndentLevelLabel.Level1))
+
+                }
+                
+            }
+            
+            
             for axle in ve.AxleList
             {
                 
@@ -116,22 +135,20 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                             for hotBoxHotWheelMeasureWheelData in hotBoxHotWheelMeasureWheelDataList
                             {
                                 if let hotBoxLeftValue =  hotBoxHotWheelMeasureWheelData.HotBoxLeftValue{
-                                    labelArr.append(getCellLabel(labelText: "Varmgång vänster: " + String(hotBoxLeftValue), indentLevel: IndentLevelLabel.Level3))
+                                    labelArr.append(getCellLabel(labelText: "Varmgång vänster: " + String(hotBoxLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3))
 
                                 }
                                 if let hotBoxRightValue =  hotBoxHotWheelMeasureWheelData.HotBoxRightValue{
-                                    labelArr.append(getCellLabel(labelText: "Varmgång höger: " + String(hotBoxRightValue), indentLevel: IndentLevelLabel.Level3))
+                                    labelArr.append(getCellLabel(labelText: "Varmgång höger: " + String(hotBoxRightValue) + "°C", indentLevel: IndentLevelLabel.Level3))
                                 }
                                 
                                 if let hotWheelLeftValue =  hotBoxHotWheelMeasureWheelData.HotWheelLeftValue{
-                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms vänster: " + String(hotWheelLeftValue), indentLevel: IndentLevelLabel.Level3))
+                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms vänster: " + String(hotWheelLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3))
                                     
                                 }
                                 if let hotWheelRightValue =  hotBoxHotWheelMeasureWheelData.HotWheelRightValue{
-                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms höger: " + String(hotWheelRightValue), indentLevel: IndentLevelLabel.Level3))
+                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms höger: " + String(hotWheelRightValue) + "°C", indentLevel: IndentLevelLabel.Level3))
                                 }
-
-                                
                             }
                         }
                     }
@@ -206,4 +223,5 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
      return UITableView.automaticDimension
      }
      */
+ */
 }
