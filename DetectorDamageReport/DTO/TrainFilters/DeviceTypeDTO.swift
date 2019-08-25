@@ -11,7 +11,7 @@ import Foundation
         var DeviceType: String = ""
         var DeviceTypeDisplayName: String = ""
         var Selected: Bool = true
-        
+
         init(deviceType: String, deviceTypeDisplayName: String, selected:Bool) {
             self.DeviceType = deviceType
             self.DeviceTypeDisplayName = deviceTypeDisplayName

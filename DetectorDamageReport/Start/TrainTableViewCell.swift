@@ -165,7 +165,6 @@ class TrainTableViewCell: UITableViewCell {
         }
         
         
-        
         detectorLabel.translatesAutoresizingMaskIntoConstraints = false;
         detectorLabel.backgroundColor = UIColor.white
         detectorLabel.textColor = UIColor.black

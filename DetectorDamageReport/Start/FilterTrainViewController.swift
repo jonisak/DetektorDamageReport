@@ -31,12 +31,7 @@ class FilterTrainViewController: FormViewController {
             
             <<< MultipleSelectorRow<String>() {
                 $0.title = "Detektortyp"
-                //$0.options = ["🍝", "🍟", "🍕", "🍚"]
-                //$0.value = ["🍝", "🍕" ]
                 }.cellSetup({ (cell, row) in
-                    
-                    //row.options = ["🍝", "🍟", "🍕", "🍚"]
-                    
                     var opt = [String]()
                     var sel = Set<String>()
                     for apa in (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.DeviceTypeDTOList
@@ -46,25 +41,17 @@ class FilterTrainViewController: FormViewController {
                         {
                             sel.insert(apa.DeviceTypeDisplayName)
                         }
-                        //row.value = sel;
                     }
                     row.options = opt
-                    
-                    
                     row.value = sel
-                    
                 }).onCellSelection({ (push, row) in
                     print(row.value);
                 }).onChange({ (row) in
                     print(row.value)
-                    
-                    
                     for index in 0..<(UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.DeviceTypeDTOList.count
                     {
                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.DeviceTypeDTOList[index].Selected = false
                     }
-                    
-                    
                     if let v = row.value
                     {
                         for selItem in v
@@ -79,21 +66,84 @@ class FilterTrainViewController: FormViewController {
                             }
                         }
                     }
+                })
+            <<< PhoneRow()
+            {
+                $0.title = "Tågnummer"
+                //$0.value = Int((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber)
+                }.onChange({ (row) in
+                    if let v = row.value
+                    {
+                     
+                        if v.count == 0
+                        {
+                            (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber = ""
+                        }else
+                        {
+                            (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber = v
+                        }
+                    }else
+                    {
+                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber = ""
+                    }
+                }).cellSetup({ (cell, row) in
+                    if (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber.count > 0
+                    {
+                        row.value = (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber
+                    }else
+                    {
+                        row.value = nil
+                    }
+                })
+          
+            +++ Section("Datum")
+            <<< DateRow(){
+                $0.title = "From"
+                //$0.value = Date(timeIntervalSinceReferenceDate: 0)
+                }.cellSetup({ (dateCell, DateRow) in
+                    
+                    if((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.FromDate.count>0)
+                    {
+                        if let date = (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.FromDate.iso8601 {
+                            DateRow.value = date;
+                        }
+                    }else
+                    {
+                        DateRow.value = nil
+                    }
                     
                     
                     
+                }).onChange({ (row) in
+                  
+                    if let d =  row.value
+                    {
+                     (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.FromDate  = d.iso8601
+                    }
+                    
+                   //
+                })
+            <<< DateRow(){
+                $0.title = "Tom"
+                //$0.value = Date(timeIntervalSinceReferenceDate: 0)
+                }.cellSetup({ (dateCell, DateRow) in
+                    if((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ToDate.count>0)
+                    {
+                        if let date = (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ToDate.iso8601 {
+                            DateRow.value = date;
+                        }
+                    }else
+                    {
+                        DateRow.value = nil
+                    }
+                    
+                }).onChange({ (row) in
+                    if let d =  row.value
+                    {
+                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ToDate =  d.iso8601
+                    }
                     
                 })
-
-            <<< PhoneRow(){
-                $0.title = "Phone Row"
-                $0.placeholder = "And numbers here"
-            }
-            +++ Section("Section2")
-            <<< DateRow(){
-                $0.title = "Date Row"
-                $0.value = Date(timeIntervalSinceReferenceDate: 0)
-        }
     }
     
 

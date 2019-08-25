@@ -22,10 +22,19 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         
         // Create Tab one
         let start = StartViewController()
-        let tabOneBarItem = UITabBarItem(title: "Start", image: nil, selectedImage: nil)
         
+        
+        let tabTrainBarItem = UITabBarItem(title: "Tåg", image: UIImage(named: "train_icon"), selectedImage: nil)
+
         let nav = UINavigationController(rootViewController: start)
-        nav.tabBarItem = tabOneBarItem
+        nav.tabBarItem = tabTrainBarItem
+    
+        let tabTwo = SettingsViewController()
+        let tabSettingsBarItem = UITabBarItem(title: "Inställningar", image: UIImage(named: "settings_icon"), selectedImage: nil)
+
+        tabTwo.tabBarItem = tabSettingsBarItem
+
+        
         //start.tabBarItem = tabOneBarItem
         
         /*
@@ -36,12 +45,12 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         tabTwo.tabBarItem = tabTwoBarItem2
         */
         
-        self.viewControllers = [nav]
+        self.viewControllers = [nav, tabTwo]
     }
     
     // UITabBarControllerDelegate method
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        print("Selected \(viewController.title!)")
+        //print("Selected \(viewController.title!)")
     }
 
 }

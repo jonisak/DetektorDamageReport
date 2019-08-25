@@ -8,7 +8,7 @@
 
 import UIKit
 import Alamofire
-
+import SwiftKeychainWrapper
 
 
 
@@ -21,6 +21,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
      var isLoading:Bool = false;
     let kLoadingCellTag2 = 1273;
 
+    
+    
     var tblView: UITableView = {
         let t = UITableView()
         t.translatesAutoresizingMaskIntoConstraints = false;
@@ -31,7 +33,6 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
-    
         let filterBtn = UIBarButtonItem(title: "Filtrera", style: .done, target: self, action: #selector(self.openFilterViewController))
         self.navigationItem.rightBarButtonItem = filterBtn
         
@@ -45,7 +46,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tblView.dataSource = self
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = UITableView.automaticDimension
-        
+        //tblView.separatorStyle = UITableViewCell.SeparatorStyle.none;
+        tblView.separatorStyle = .none;
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
         tblView.addSubview(refreshControl)
@@ -107,11 +109,17 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
     
-
-
+        var headers: HTTPHeaders!
+        if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
+        {
+            headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+        }
         
-        let headers: HTTPHeaders = [.authorization(username: "test", password: "1111")]
-        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "GetUserTrains", method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+        
+        
+        
+        
+        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "Train", method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
             print("Request: \(String(describing: response.request))")   // original url request
             print("Response: \(String(describing: response.response))") // http url response
             print("Result: \(response.result)")                         // response serialization result
@@ -119,9 +127,13 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
             self.isLoading = false;
             print(response.error);
             
+            
+            
+            
             if let d = response.data{
                 do {
                     let decoder = JSONDecoder() //or any other Decoder
+                    decoder.dateDecodingStrategy = .iso8601
                     let tr = try decoder.decode([TrainListDTO].self, from: d)
                     //if let tr = t
                     //{
@@ -259,7 +271,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ve = VehicleViewController();
         //ve.trainDTOList = self.trainListDTO;
-        ve.selectedTraindIndex = indexPath.row
+        
+        ve.trainListDTO = self.trainListDTO[indexPath.row];
         self.navigationController?.pushViewController(ve, animated: true);
     }
     

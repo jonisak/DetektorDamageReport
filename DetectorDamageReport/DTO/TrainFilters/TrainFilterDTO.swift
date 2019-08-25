@@ -14,6 +14,9 @@ struct TrainFilterDTO: Codable {
     var PageSize: Int? = 0
     var ShowTrainWithAlarmOnly:Bool
     var DeviceTypeDTOList : [DeviceTypeDTO]
+    var TrainNumber: String = ""
+    var FromDate:String = ""
+    var ToDate: String = ""
 
 
     init(maxResultCount: Int, page: Int, pageSize: Int ,showTrainWithAlarmOnly:Bool, deviceTypeDTOList: [DeviceTypeDTO]) {

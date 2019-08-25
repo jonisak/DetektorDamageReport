@@ -8,12 +8,13 @@
 
 import UIKit
 import Alamofire
+import SwiftKeychainWrapper
 @UIApplicationMain
 
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var WebapiURL = "http://13.94.134.22/Detectordamagereport/api/"
+    var WebapiURL = "http://104.46.44.217/Detectordamagereport/api/"
     var trainFilterDTO : TrainFilterDTO!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -23,6 +24,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         deviceTypeList.append(DeviceTypeDTO(deviceType: "WHEELDAMAGE", deviceTypeDisplayName: "Hjulskadedetektor", selected: true))
 
         self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList)
+        
+        /*
+        UINavigationBar.appearance().backgroundColor = UIColor.init(red: 204.0, green: 46.0, blue: 44.0, alpha: 1.0)
+        UIBarButtonItem.appearance().tintColor = UIColor.black
+        UINavigationBar.appearance().isTranslucent = false
+//        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key(rawValue: UITextAttributeTextColor): UIColor.blue]
+        UITabBar.appearance().backgroundColor = UIColor.yellow;
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.orange]
+*/
+        
+        UINavigationBar.appearance().backgroundColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
+        UINavigationBar.appearance().barTintColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
+
+        UIBarButtonItem.appearance().tintColor = UIColor.white
+//        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.orange]
+        //UITabBar.appearance().backgroundColor = UIColor.yellow;
+        
+        let userDefaults = UserDefaults.standard
+        if userDefaults.bool(forKey: "hasRunBefore") == false {
+            // remove keychain items here
+            _ = KeychainWrapper.standard.removeObject(forKey:"detectordamagereport_email")
+            _ = KeychainWrapper.standard.removeObject(forKey: "detectordamagereport_password")
+            userDefaults.set(true, forKey: "hasRunBefore")
+            userDefaults.synchronize()
+            return true;
+        }
         
 
 
@@ -35,6 +62,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.makeKeyAndVisible()
 
 
+        
+        
+        
         return true
     }
 
