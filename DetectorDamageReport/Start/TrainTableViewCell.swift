@@ -72,75 +72,30 @@ class TrainTableViewCell: UITableViewCell {
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-            super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-            
-            
-        }
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.selectionStyle = .none;
+    }
     
     func layoutViews(trainListDTO:TrainListDTO)
     {
-        /*
-        var isAlert :Bool = false;
-        
-        
-        
-        if let l = trainListDTO.AlertList
+        let theSubviews: Array = (self.contentView.subviews)
+        for view in theSubviews
         {
-            if l.count > 0
-            {
-                isAlert = true
-            }
+            view.removeFromSuperview()
         }
-        
-        if let Vehicles = trainListDTO.Vehicles
-        {
-            for vehicle in Vehicles {
-             
-                if vehicle.AlertList.count > 0
-                {
-                    isAlert = true
-                }
-                
-                for axle in vehicle.AxleList
-                {
-                    if let al = axle.AlertList
-                    {
-                        if al.count > 0
-                        {
-                            isAlert = true
-                        }
-                    }
-                
-                    
-                    if let wheelList = axle.WheelList
-                    {
-                        for wheel in wheelList
-                        {
-                            if let a = wheel.AlertList
-                            {
-                                if a.count > 0
-                                {
-                                    isAlert = true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        */
+
         
         if trainListDTO.TrainHasAlarmItem
         {
             self.contentView.addSubview(warningImageView)
+
             warningImageView.translatesAutoresizingMaskIntoConstraints = false;
             warningImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
             warningImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
             warningImageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true;
             warningImageView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 10).isActive = true;
         }
+
         self.contentView.addSubview(messageTypeLabel)
         self.contentView.addSubview(detectorLabel)
         self.contentView.addSubview(sentLabel)

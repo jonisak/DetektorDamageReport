@@ -11,6 +11,8 @@ import UIKit
 class VehicleDetailTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.selectionStyle = .none
+
     }
     
     required init?(coder aDecoder: NSCoder) {

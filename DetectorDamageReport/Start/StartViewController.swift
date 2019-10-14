@@ -9,34 +9,47 @@
 import UIKit
 import Alamofire
 import SwiftKeychainWrapper
+import FTLinearActivityIndicator
 
+class StartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, reloadStartViewDelegate {
 
-
-
-class StartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
     var currentPage = 1;
     var totalPages = 0;
     var pageSize = 10;
     var trainListDTO = [TrainListDTO]();
-     var isLoading:Bool = false;
+    var isLoading:Bool = false;
     let kLoadingCellTag2 = 1273;
 
-    
-    
     var tblView: UITableView = {
         let t = UITableView()
         t.translatesAutoresizingMaskIntoConstraints = false;
         return t;
     }()
-    
+    var standAloneIndicator: FTLinearActivityIndicator =
+    {
+        let t = FTLinearActivityIndicator()
+        t.translatesAutoresizingMaskIntoConstraints = false;
+        return t;
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
+        self.view.addSubview(standAloneIndicator)
+
         let filterBtn = UIBarButtonItem(title: "Filtrera", style: .done, target: self, action: #selector(self.openFilterViewController))
         self.navigationItem.rightBarButtonItem = filterBtn
         
         
+        standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        
+        standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
+
+        standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
+        standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
+        
+        self.navigationItem.title = "Passager"
         tblView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         tblView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         tblView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -46,6 +59,11 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tblView.dataSource = self
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = UITableView.automaticDimension
+        
+        
+        
+        
+        
         //tblView.separatorStyle = UITableViewCell.SeparatorStyle.none;
         tblView.separatorStyle = .none;
         let refreshControl = UIRefreshControl()
@@ -63,32 +81,34 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     @objc func openFilterViewController(){
         let filterTrainViewController = FilterTrainViewController()
+        filterTrainViewController.delegate = self;
         let nav = UINavigationController(rootViewController: filterTrainViewController)
         self.present(nav, animated: true, completion: nil)
     }
     
     
-    @objc func refresh(_ refreshControl: UIRefreshControl) {
+    
+    func reload() {
         currentPage = 1;
         pageSize = 50;
         self.trainListDTO.removeAll()
-        refreshControl.endRefreshing()
         self.tblView.reloadData();
-        
         fetchData();
-        
+    }
+    
+    @objc func refresh(_ refreshControl: UIRefreshControl) {
+        reload();
+        refreshControl.endRefreshing()
+
     }
     
     
     func fetchData(){
-    
-        
-        
         if self.isLoading {
             return;
         }
 
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
+        standAloneIndicator.startAnimating()
 
         
         //let pagingDTO: PagingDTO  = PagingDTO()
@@ -113,21 +133,32 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
         {
             headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+        }else
+        {
+            let settingsViewcontroller = SettingsViewController();
+            settingsViewcontroller.delegate = self
+            let nav = UINavigationController(rootViewController: settingsViewcontroller)
+            self.present(nav, animated: true, completion: nil)
+
+            return;
         }
-        
-        
-        
-        
         
         AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "Train", method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
             print("Request: \(String(describing: response.request))")   // original url request
             print("Response: \(String(describing: response.response))") // http url response
             print("Result: \(response.result)")                         // response serialization result
-            
             self.isLoading = false;
-            print(response.error);
-            
-            
+            self.standAloneIndicator.stopAnimating()
+
+            if let err = response.error
+            {
+                let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: err.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                errorAlertMessage.addAction(okAction);
+                
+                self.present(errorAlertMessage, animated: true, completion: nil)
+                return;
+            }
             
             
             if let d = response.data{
@@ -135,22 +166,20 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     let decoder = JSONDecoder() //or any other Decoder
                     decoder.dateDecodingStrategy = .iso8601
                     let tr = try decoder.decode([TrainListDTO].self, from: d)
-                    //if let tr = t
-                    //{
-                        self.trainListDTO.append(contentsOf: tr)
-
-                        if(self.trainListDTO.count>0 && self.currentPage==1)
-                        {
-                            self.totalPages =  (self.trainListDTO[0].TotalCount! + self.pageSize - 1) / self.pageSize;
-                        }
-
-                        
-                        DispatchQueue.main.async {
+                    self.trainListDTO.append(contentsOf: tr)
+                    if(self.trainListDTO.count>0 && self.currentPage==1)
+                    {
+                        self.totalPages =  (self.trainListDTO[0].TotalCount! + self.pageSize - 1) / self.pageSize;
+                    }
+                    DispatchQueue.main.async {
                             self.tblView.reloadData()
-                        }
-                    //}
+                    }
                 } catch {
-                    print(error)
+                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                    errorAlertMessage.addAction(okAction);
+                    
+                    self.present(errorAlertMessage, animated: true, completion: nil)
                     
                 }
                 
@@ -226,11 +255,26 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                                            reuseIdentifier:"CELL");
         }
         
+        
+        
+        
+        
+        
         cell.layoutViews(trainListDTO: self.trainListDTO[indexPath.row])
         cell.sentLabel.text = "Datum: " + self.trainListDTO[indexPath.row].MessageSent
-        cell.detectorLabel.text = "Detektor: " + self.trainListDTO[indexPath.row].Detector
+        
+        if let detector = self.trainListDTO[indexPath.row].Detector
+        {
+            cell.detectorLabel.text = "Detektor: " + /*String.random(length: 8)*/  detector.Name
+
+        }else
+        {
+            cell.detectorLabel.text = "Detektor: " + /*String.random(length: 8)*/   self.trainListDTO[indexPath.row].SGLN
+        }
+        
+        
         cell.trainOperatorLabel.text = self.trainListDTO[indexPath.row].TrainOperator
-        cell.trainNumberLabel.text = "Tågnummer: " + self.trainListDTO[indexPath.row].TrainNumber
+        cell.trainNumberLabel.text = "Tågnummer: " /*+ String.random(length: 4) */ + self.trainListDTO[indexPath.row].TrainNumber
         cell.trainDirectionLabel.text = self.trainListDTO[indexPath.row].TrainDirection + " riktning"
         cell.vehicleCountLabel.text = String(self.trainListDTO[indexPath.row].VehicleCount) + " st fordon"
         cell.accessoryType = .disclosureIndicator
@@ -253,6 +297,14 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 self.currentPage = self.currentPage + 1;
                 self.fetchData()
             }
+        }
+        
+        if self.trainListDTO[indexPath.row].TrainHasAlarmItem
+        {
+            cell.warningImageView.isHidden = false
+        }else
+        {
+            cell.warningImageView.isHidden = true
         }
         return cell;
     }

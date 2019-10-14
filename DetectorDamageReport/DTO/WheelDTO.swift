@@ -7,7 +7,7 @@
 //
 
 import Foundation
-struct WheelDTO: Decodable {
+struct WheelDTO: Codable {
     var WheelId: CLong
     
     let WheelDamageMeasureDataWheelList: [WheelDamageMeasureDataWheelDTO]?

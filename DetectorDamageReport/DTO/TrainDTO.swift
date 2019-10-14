@@ -7,7 +7,7 @@
 //
 
 import Foundation
-struct TrainDTO: Decodable {
+struct TrainDTO: Codable {
   
     
     var TrainId: CLong

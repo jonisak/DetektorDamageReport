@@ -12,5 +12,6 @@ target 'DetectorDamageReport' do
   pod 'SwiftKeychainWrapper'
 
   pod "SwiftSpinner"
+  pod 'FTLinearActivityIndicator'
 
 end

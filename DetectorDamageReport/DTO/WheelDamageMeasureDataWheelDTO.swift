@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct WheelDamageMeasureDataWheelDTO: Decodable {
+struct WheelDamageMeasureDataWheelDTO: Codable {
     var WheelDamageMeasureDataWheelId: CLong
     var LeftWheelDamageDistributedLoadValue : Float?
     var LeftWheelDamageMeanValue : Float?

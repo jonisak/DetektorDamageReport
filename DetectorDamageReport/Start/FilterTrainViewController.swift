@@ -9,6 +9,7 @@
 import UIKit
 import Eureka
 class FilterTrainViewController: FormViewController {
+    var delegate:reloadStartViewDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,9 +46,9 @@ class FilterTrainViewController: FormViewController {
                     row.options = opt
                     row.value = sel
                 }).onCellSelection({ (push, row) in
-                    print(row.value);
+
                 }).onChange({ (row) in
-                    print(row.value)
+
                     for index in 0..<(UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.DeviceTypeDTOList.count
                     {
                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.DeviceTypeDTOList[index].Selected = false
@@ -151,6 +152,7 @@ class FilterTrainViewController: FormViewController {
     
     
     @objc func closeView(){
+         self.delegate?.reload()
         self.dismiss(animated: true, completion: nil)
     }
 

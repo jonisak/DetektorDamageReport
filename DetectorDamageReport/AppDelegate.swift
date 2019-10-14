@@ -9,20 +9,33 @@
 import UIKit
 import Alamofire
 import SwiftKeychainWrapper
+
 @UIApplicationMain
 
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var WebapiURL = "http://104.46.44.217/Detectordamagereport/api/"
+    var WebapiURL = "http://23.97.208.25/Detectordamagereport/api/"
     var trainFilterDTO : TrainFilterDTO!
-
+    var alarmReportReasonDTOList = [AlarmReportReasonDTO]();
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+       
+
+        
         // Override point for customization after application launch.
         var deviceTypeList = [DeviceTypeDTO]()
         deviceTypeList.append(DeviceTypeDTO(deviceType: "HOTBOXHOTWHEEL", deviceTypeDisplayName: "Varmgång/Tjuvbroms detektor", selected: true))
         deviceTypeList.append(DeviceTypeDTO(deviceType: "WHEELDAMAGE", deviceTypeDisplayName: "Hjulskadedetektor", selected: true))
 
+        
+        
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: -1, name: "Välj"))
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 1, name: "Varmgång"))
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 2, name: "Tjuvbroms"))
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 3, name: "Annat"))
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 4, name: "Inga avvikelser Funna"))
+
+        
         self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList)
         
         /*
@@ -38,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
 
         UIBarButtonItem.appearance().tintColor = UIColor.white
-//        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.orange]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
         //UITabBar.appearance().backgroundColor = UIColor.yellow;
         
         let userDefaults = UserDefaults.standard
@@ -48,7 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             _ = KeychainWrapper.standard.removeObject(forKey: "detectordamagereport_password")
             userDefaults.set(true, forKey: "hasRunBefore")
             userDefaults.synchronize()
-            return true;
         }
         
 

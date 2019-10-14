@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct HotBoxHotWheelMeasureWheelDataDTO: Decodable {
+struct HotBoxHotWheelMeasureWheelDataDTO: Codable {
     var HotBoxHotWheelMeasureWheelDataId: CLong
     var HotBoxLeftValue : Int?
     var HotBoxRightValue : Int?

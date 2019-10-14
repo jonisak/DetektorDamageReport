@@ -9,6 +9,8 @@
 import UIKit
 import Alamofire
 import SwiftKeychainWrapper
+import FTLinearActivityIndicator
+
 class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     var trainListDTO : TrainListDTO!
     var trainDTO : TrainDTO!
@@ -19,10 +21,20 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         return t;
     }()
     
+    var standAloneIndicator: FTLinearActivityIndicator =
+    {
+        let t = FTLinearActivityIndicator()
+        t.translatesAutoresizingMaskIntoConstraints = false;
+        return t;
+    }()
+    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
+        self.view.addSubview(standAloneIndicator)
+        
         
         tblView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         tblView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
@@ -38,6 +50,19 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
        
         tblView.separatorStyle = .none;
 
+        
+        standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        
+        standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
+
+        standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
+        standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
+        
+        if trainListDTO.TrainHasAlarmItem
+        {
+            let alarmReportBtn = UIBarButtonItem(title: "Rapportera larm", style: UIBarButtonItem.Style.plain, target: self, action: #selector(openAlarmReport))
+            self.navigationItem.rightBarButtonItem = alarmReportBtn
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -46,7 +71,14 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.fetchData()
         
     }
-    
+    @objc func openAlarmReport()
+    {
+        let reportAlarmViewController =  ReportAlarmViewController()
+        reportAlarmViewController.trainDTO = self.trainDTO
+        let nav = UINavigationController(rootViewController: reportAlarmViewController)
+        self.present(nav, animated: true, completion: nil)
+        
+    }
     func fetchData(){
         
         
@@ -55,13 +87,14 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             return;
         }
         
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true;
-
+        standAloneIndicator.startAnimating()
         var headers: HTTPHeaders!
         if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
         {
             headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
         }
+        
+
         
         AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "Train/" + String(trainListDTO.TrainId), method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
             print("Request: \(String(describing: response.request))")   // original url request
@@ -70,6 +103,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             self.isLoading = false;
             print(response.error);
+            self.standAloneIndicator.stopAnimating()
             
             if let d = response.data{
                 do {
@@ -117,7 +151,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     }
     
-    func getCellLabel(labelText:String, indentLevel:IndentLevelLabel, image:UIImage?)->UILabel
+    func getCellLabel(labelText:String, indentLevel:IndentLevelLabel, image:UIImage?, textColor:UIColor?)->UILabel
     {
 
         let label = UILabel.init()
@@ -127,6 +161,11 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         //label.text = labelText
         label.padding = UIEdgeInsets(top: 0, left: CGFloat(indentLevel.rawValue), bottom: 0, right: 0)
 
+        if let col = textColor
+        {
+            label.textColor = col
+        }
+
         let completeText = NSMutableAttributedString(string: labelText)
 
         if let img = image
@@ -135,7 +174,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             imageAttachment.image = img
             let imageOffsetY:CGFloat = 0.0;
             //imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: imageAttachment.image!.size.width, height: imageAttachment.image!.size.height)
-            imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: 25, height: 25)
+            imageAttachment.bounds = CGRect(x: 0, y: imageOffsetY, width: 18, height: 18)
 
             let attachmentString = NSAttributedString(attachment: imageAttachment)
             completeText.append(attachmentString)
@@ -166,28 +205,28 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let ve = self.trainDTO.Vehicles?[indexPath.row]
         {
             var labelArr = [UILabel]()
-            labelArr.append(getCellLabel(labelText: "Fordonsnummer: " + ve.VehicleNumber, indentLevel: IndentLevelLabel.Level0, image: nil))
-            labelArr.append(getCellLabel(labelText: "Hastighet: " + String(ve.Speed), indentLevel: IndentLevelLabel.Level0, image: nil))
-            labelArr.append(getCellLabel(labelText: "Antal axlar: " + String(ve.AxleCount), indentLevel: IndentLevelLabel.Level0, image: nil))
+            labelArr.append(getCellLabel(labelText: "Fordonsnummer: " +  /*String.random(length: 13) */ ve.VehicleNumber, indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
+            labelArr.append(getCellLabel(labelText: "Hastighet: " + String(ve.Speed), indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
+            labelArr.append(getCellLabel(labelText: "Antal axlar: " + String(ve.AxleCount), indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
 
             
             if ve.WheelDamageMeasureDataVehicleList.count>0
             {
-                labelArr.append(getCellLabel(labelText: "Lastfördelning", indentLevel: IndentLevelLabel.Level0, image: nil))
+                labelArr.append(getCellLabel(labelText: "Lastfördelning", indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
 
                 for item in ve.WheelDamageMeasureDataVehicleList
                 {
                     if item.FrontRearLoadRatio > 0
                     {
-                        labelArr.append(getCellLabel(labelText: "Fram/Bak" + String(item.FrontRearLoadRatio), indentLevel: IndentLevelLabel.Level1, image: nil))
+                        labelArr.append(getCellLabel(labelText: "Fram/Bak" + String(item.FrontRearLoadRatio), indentLevel: IndentLevelLabel.Level1, image: nil,  textColor:nil))
                     }
                     if item.LeftRightLoadRatio > 0
                     {
-                        labelArr.append(getCellLabel(labelText: "Vänster/Höger" + String(item.LeftRightLoadRatio), indentLevel: IndentLevelLabel.Level1, image: nil))
+                        labelArr.append(getCellLabel(labelText: "Vänster/Höger" + String(item.LeftRightLoadRatio), indentLevel: IndentLevelLabel.Level1, image: nil,  textColor:nil))
                     }
                     if item.WeightInTons > 0
                     {
-                        labelArr.append(getCellLabel(labelText: "Vikt: " + String(item.WeightInTons) + " ton", indentLevel: IndentLevelLabel.Level1, image: nil))
+                        labelArr.append(getCellLabel(labelText: "Vikt: " + String(item.WeightInTons) + " ton", indentLevel: IndentLevelLabel.Level1, image: nil,  textColor:nil))
                     }
 
                 }
@@ -199,10 +238,10 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             {
                 if let axlenumber = axle.AxleNumber
                 {
-                    labelArr.append(getCellLabel(labelText: "Axel: " + String(String(axlenumber)), indentLevel: IndentLevelLabel.Level1, image: nil))
+                    labelArr.append(getCellLabel(labelText: "Axel: " + String(String(axlenumber)), indentLevel: IndentLevelLabel.Level1, image: nil,  textColor:nil))
                 }else
                 {
-                    labelArr.append(getCellLabel(labelText: "Axel: - ", indentLevel: IndentLevelLabel.Level1, image: nil))
+                    labelArr.append(getCellLabel(labelText: "Axel: - ", indentLevel: IndentLevelLabel.Level1, image: nil,  textColor:nil))
                 }
                 
                 
@@ -215,7 +254,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                         {
                             if(axleLoad > 0 )
                             {
-                                labelArr.append(getCellLabel(labelText: "Axellast: " + String(format: "%.2f", axleLoad) + " Ton", indentLevel: IndentLevelLabel.Level2, image: nil))
+                                labelArr.append(getCellLabel(labelText: "Axellast: " + String(format: "%.2f", axleLoad) + " Ton", indentLevel: IndentLevelLabel.Level2, image: nil,  textColor:nil))
                             }
                         }
                     }
@@ -229,7 +268,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                     for wheel in wheelList
                     {
                         
-                        labelArr.append(getCellLabel(labelText: "Hjul: " + String(hjulnummer), indentLevel: IndentLevelLabel.Level2, image: nil))
+                        labelArr.append(getCellLabel(labelText: "Hjul: " + String(hjulnummer), indentLevel: IndentLevelLabel.Level2, image: nil,  textColor:nil))
                         hjulnummer = hjulnummer + 1
                         
                         
@@ -240,7 +279,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                             {
                                 for alert in alerts
                                 {
-                                    labelArr.append(getCellLabel(labelText: alert.AlarmLevel + " " + alert.DecriptionText, indentLevel: IndentLevelLabel.Level2, image: UIImage(named: "AlertImage")))
+                                    labelArr.append(getCellLabel(labelText: alert.MeasurementType + " " + alert.DecriptionText, indentLevel: IndentLevelLabel.Level2, image: UIImage(named: "AlertImage"), textColor: UIColor.red) )
 
                                 }
 
@@ -253,19 +292,19 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                             for hotBoxHotWheelMeasureWheelData in hotBoxHotWheelMeasureWheelDataList
                             {
                                 if let hotBoxLeftValue =  hotBoxHotWheelMeasureWheelData.HotBoxLeftValue{
-                                    labelArr.append(getCellLabel(labelText: "Varmgång vänster: " + String(hotBoxLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Varmgång vänster: " + String(hotBoxLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                     
                                 }
                                 if let hotBoxRightValue =  hotBoxHotWheelMeasureWheelData.HotBoxRightValue{
-                                    labelArr.append(getCellLabel(labelText: "Varmgång höger: " + String(hotBoxRightValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Varmgång höger: " + String(hotBoxRightValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                                 
                                 if let hotWheelLeftValue =  hotBoxHotWheelMeasureWheelData.HotWheelLeftValue{
-                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms vänster: " + String(hotWheelLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms vänster: " + String(hotWheelLeftValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                     
                                 }
                                 if let hotWheelRightValue =  hotBoxHotWheelMeasureWheelData.HotWheelRightValue{
-                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms höger: " + String(hotWheelRightValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Tjuvbroms höger: " + String(hotWheelRightValue) + "°C", indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                             }
                         }
@@ -276,16 +315,16 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                             for wheelDamageMeasureDataWheel in wheelDamageMeasureDataWheelList
                             {
                                 if let LeftWheelDamageMeanValue =  wheelDamageMeasureDataWheel.LeftWheelDamageMeanValue {
-                                    labelArr.append(getCellLabel(labelText: "Vänster Mean: " + String(LeftWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Vänster Mean: " + String(LeftWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                                 if let RightWheelDamageMeanValue =  wheelDamageMeasureDataWheel.RightWheelDamageMeanValue {
-                                    labelArr.append(getCellLabel(labelText: "Höger Mean: " + String(RightWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Höger Mean: " + String(RightWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                                 if let LeftWheelDamagePeakValue =  wheelDamageMeasureDataWheel.LeftWheelDamagePeakValue {
-                                    labelArr.append(getCellLabel(labelText: "Vänster Peak: " + String(LeftWheelDamagePeakValue), indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Vänster Peak: " + String(LeftWheelDamagePeakValue), indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                                 if let RightWheelDamageMeanValue =  wheelDamageMeasureDataWheel.RightWheelDamageMeanValue {
-                                    labelArr.append(getCellLabel(labelText: "Höger Peak: " + String(RightWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil))
+                                    labelArr.append(getCellLabel(labelText: "Höger Peak: " + String(RightWheelDamageMeanValue), indentLevel: IndentLevelLabel.Level3, image: nil,  textColor:nil))
                                 }
                                 /*
                                 if let LeftWheelDamageDistributedLoadValue =  wheelDamageMeasureDataWheel.LeftWheelDamageDistributedLoadValue {

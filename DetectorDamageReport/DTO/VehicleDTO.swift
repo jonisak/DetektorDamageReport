@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct VehicleDTO: Decodable {
+struct VehicleDTO: Codable {
     var VehicleId: CLong
     var VehicleNumber : String
     var Speed : Int

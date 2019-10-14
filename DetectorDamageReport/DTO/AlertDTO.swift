@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct AlertDTO: Decodable {
+struct AlertDTO: Codable {
     var AlertId: CLong
     var MeasurementType : String
     var DecriptionText : String

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TrainListDTO: Decodable {
+struct TrainListDTO: Codable {
     var TotalCount : Int?
     var TrainId: CLong
     var TrainOperator:String
@@ -16,10 +16,12 @@ struct TrainListDTO: Decodable {
     var TrainDirection:String
     var VehicleCount : Int
     var MessageSent:String
-    var Detector:String
+    var SGLN:String
     var isWheelDamage:Bool
     var isHotBoxHotWheel:Bool
     var TrainHasAlarmItem:Bool
+    var Detector : DetectorDTO?
+    
 }
 
 

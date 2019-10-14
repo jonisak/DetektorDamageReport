@@ -7,7 +7,7 @@
 //
 
 import Foundation
-struct WheelDamageMeasureDataAxleDTO: Decodable {
+struct WheelDamageMeasureDataAxleDTO: Codable {
     var WheelDamageMeasureDataAxleId: CLong
     var AxleLoad : Float?
     var LeftRightLoadRatio : Float?
