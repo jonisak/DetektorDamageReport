@@ -14,18 +14,20 @@ struct TrainFilterDTO: Codable {
     var PageSize: Int? = 0
     var ShowTrainWithAlarmOnly:Bool
     var DeviceTypeDTOList : [DeviceTypeDTO]
+    var SelectedDetectorsDTOList : [DetectorDTO]
+
     var TrainNumber: String = ""
     var FromDate:String = ""
     var ToDate: String = ""
 
 
-    init(maxResultCount: Int, page: Int, pageSize: Int ,showTrainWithAlarmOnly:Bool, deviceTypeDTOList: [DeviceTypeDTO]) {
+    init(maxResultCount: Int, page: Int, pageSize: Int ,showTrainWithAlarmOnly:Bool, deviceTypeDTOList: [DeviceTypeDTO], selectedDetectorsDTOList: [DetectorDTO]) {
         self.MaxResultCount = maxResultCount
         self.Page = page
         self.PageSize = pageSize
         self.ShowTrainWithAlarmOnly = showTrainWithAlarmOnly
         self.DeviceTypeDTOList = deviceTypeDTOList
-        
+        self.SelectedDetectorsDTOList = selectedDetectorsDTOList
     }
 }
 
