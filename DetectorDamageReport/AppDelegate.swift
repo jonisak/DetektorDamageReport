@@ -15,9 +15,12 @@ import SwiftKeychainWrapper
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var WebapiURL = "http://23.97.208.25/Detectordamagereport/api/"
+    var WebapiURL = "http://52.136.235.180/Detectordamagereport/api/"
     var trainFilterDTO : TrainFilterDTO!
+    
     var alarmReportReasonDTOList = [AlarmReportReasonDTO]();
+    var detectornDTOList = [DetectorDTO]();
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
 
@@ -35,8 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 3, name: "Annat"))
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 4, name: "Inga avvikelser Funna"))
 
-        
-        self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList)
+        self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList, selectedDetectorsDTOList: [DetectorDTO]())
         
         /*
         UINavigationBar.appearance().backgroundColor = UIColor.init(red: 204.0, green: 46.0, blue: 44.0, alpha: 1.0)
@@ -51,9 +53,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
 
         UIBarButtonItem.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
-        //UITabBar.appearance().backgroundColor = UIColor.yellow;
+
+        //UIButton.appearance().tintColor = UIColor.white
+        //UIButton.appearance().backgroundColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
         
+        //UIToolbar.appearance().tintColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
+        //UIToolbar.appearance().backgroundColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
+        UIToolbar.appearance().tintColor = UIColor.black
+        UIToolbar.appearance().backgroundColor = UIColor.black
+
+        
+        
+        
+        //UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]
+        //UITabBar.appearance().backgroundColor = UIColor.yellow;
+        // NavigationAccessoryView.appearance().barTintColor
         let userDefaults = UserDefaults.standard
         if userDefaults.bool(forKey: "hasRunBefore") == false {
             // remove keychain items here

@@ -68,6 +68,52 @@ class FilterTrainViewController: FormViewController {
                         }
                     }
                 })
+            <<< MultipleSelectorRow<String>() {
+                $0.title = "Detektorer"
+                 
+                //$0.options = (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.a
+                }.cellSetup({ (cell, row) in
+                    var opt = [String]()
+                    var sel = Set<String>()
+                    
+                    for detektor in (UIApplication.shared.delegate as! AppDelegate).detectornDTOList
+                    {
+                        opt.append(detektor.Name)
+                        for det in (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.SelectedDetectorsDTOList
+                        {
+                            if det.DetectorId == detektor.DetectorId
+                            {
+                                sel.insert(detektor.Name)
+                                continue
+                            }
+                        }
+                    }
+                
+                    row.options = opt
+                    row.value = sel
+                }).onCellSelection({ (push, row) in
+                    
+                    
+                }).onChange({ (row) in
+
+                    (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.SelectedDetectorsDTOList.removeAll()
+
+                    if let v = row.value
+                    {
+                        for selItem in v
+                        {
+                            
+                            for de in (UIApplication.shared.delegate as! AppDelegate).detectornDTOList
+                            {
+                                
+                                if selItem == de.Name
+                                {
+                                    (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.SelectedDetectorsDTOList.append(de)
+                                }
+                            }
+                        }
+                    }
+                })
             <<< PhoneRow()
             {
                 $0.title = "Tågnummer"

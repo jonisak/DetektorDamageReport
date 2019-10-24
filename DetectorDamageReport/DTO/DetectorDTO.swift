@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import Eureka
 
 
 import Foundation
@@ -16,6 +16,7 @@ struct DetectorDTO: Codable {
     var SGLN:String
     var Name:String
     var DetectorType:String
-    var Latitude:String
-    var Longitude:String
+    var Latitude:String?
+    var Longitude:String?
+
 }

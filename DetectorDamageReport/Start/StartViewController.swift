@@ -38,9 +38,21 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.view.addSubview(tblView)
         self.view.addSubview(standAloneIndicator)
 
-        let filterBtn = UIBarButtonItem(title: "Filtrera", style: .done, target: self, action: #selector(self.openFilterViewController))
+        
+        //let filterBtn = UIBarButtonItem(title: "Filtrera", style: .plain, target: self, action: #selector(self.openFilterViewController))
+        //self.navigationController?.navigationBar.topItem?.leftBarButtonItem = filterBtn
+        //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.openFilterViewController))
+        //self.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.openFilterViewController))
+        
+        let filterBtn = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(self.openFilterViewController))
+        filterBtn.tintColor = UIColor.white
         self.navigationItem.rightBarButtonItem = filterBtn
         
+        
+        
+        //let mapBtn = UIBarButtonItem(title: "Kartan", style: .plain, target: self, action: #selector(self.openDetectorMapViewController))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.openDetectorMapViewController))
+
         
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
         
@@ -60,16 +72,13 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = UITableView.automaticDimension
         
-        
-        
-        
-        
         //tblView.separatorStyle = UITableViewCell.SeparatorStyle.none;
         tblView.separatorStyle = .none;
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
         tblView.addSubview(refreshControl)
         self.fetchData()
+        self.fetchDetectorData()
         
     }
  
@@ -85,7 +94,12 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let nav = UINavigationController(rootViewController: filterTrainViewController)
         self.present(nav, animated: true, completion: nil)
     }
-    
+    @objc func openDetectorMapViewController(){
+        let detectorMapViewController = DetectorMapViewController()
+        detectorMapViewController.delegate = self;
+        let nav = UINavigationController(rootViewController: detectorMapViewController)
+        self.present(nav, animated: true, completion: nil)
+    }
     
     
     func reload() {
@@ -101,6 +115,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         refreshControl.endRefreshing()
 
     }
+    
+
     
     
     func fetchData(){
@@ -187,6 +203,50 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         
     }
+    func fetchDetectorData(){
+         var headers: HTTPHeaders!
+         if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
+         {
+             headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+         }
+         
+        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "Detector", method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+             print("Request: \(String(describing: response.request))")   // original url request
+             print("Response: \(String(describing: response.response))") // http url response
+             print("Result: \(response.result)")                         // response serialization result
+
+            
+             if let err = response.error
+             {
+                print(err);
+                return;
+             }
+            
+             
+             if let d = response.data{
+                 do {
+                    let decoder = JSONDecoder() //or any other Decoder
+                    decoder.dateDecodingStrategy = .iso8601
+                    (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.removeAll()
+                    let detectors = try decoder.decode([DetectorDTO].self, from: d)
+                    (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.append(contentsOf: detectors);
+                 } catch {
+                    print(error)
+                    /*
+                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                     let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                     errorAlertMessage.addAction(okAction);
+                     
+                     self.present(errorAlertMessage, animated: true, completion: nil)
+                     */
+                 }
+                 
+             }
+         }
+         
+     }
+    
+    
     func realoadData()
     {
         trainListDTO.removeAll();

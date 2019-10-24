@@ -40,15 +40,12 @@ class TrainTableViewCell: UITableViewCell {
         return t;
     }()
     
-    
     var trainOperatorLabel: UILabel = {
             let t = UILabel()
             t.translatesAutoresizingMaskIntoConstraints = false;
             return t;
         }()
     
-    
-
     var trainNumberLabel: UILabel = {
         let t = UILabel()
         
@@ -128,13 +125,6 @@ class TrainTableViewCell: UITableViewCell {
         detectorLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10).isActive = true;
         detectorLabel.topAnchor.constraint(equalTo: self.messageTypeLabel.bottomAnchor, constant: 10).isActive = true;
 
-        
-        
-
-        
-        
-        
-        
         sentLabel.translatesAutoresizingMaskIntoConstraints = false;
         sentLabel.backgroundColor = UIColor.white
         sentLabel.textColor = UIColor.black
@@ -142,8 +132,6 @@ class TrainTableViewCell: UITableViewCell {
         sentLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor).isActive = true
         sentLabel.topAnchor.constraint(equalTo: detectorLabel.bottomAnchor, constant: 10).isActive = true;
         sentLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10).isActive = true;
-        
-        
         
         trainOperatorLabel.translatesAutoresizingMaskIntoConstraints = false;
         trainOperatorLabel.backgroundColor = UIColor.white
@@ -171,7 +159,6 @@ class TrainTableViewCell: UITableViewCell {
         trainDirectionLabel.topAnchor.constraint(equalTo: trainNumberLabel.bottomAnchor, constant: 10).isActive = true;
         trainDirectionLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10).isActive = true;
         
-        
         vehicleCountLabel.translatesAutoresizingMaskIntoConstraints = false;
         vehicleCountLabel.backgroundColor = UIColor.white
         vehicleCountLabel.textColor = UIColor.black
@@ -179,7 +166,6 @@ class TrainTableViewCell: UITableViewCell {
         vehicleCountLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor).isActive = true
         vehicleCountLabel.topAnchor.constraint(equalTo: trainDirectionLabel.bottomAnchor, constant: 10).isActive = true;
         vehicleCountLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10).isActive = true;
-        
         
     }
     
