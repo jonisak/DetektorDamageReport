@@ -42,14 +42,11 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         tblView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         tblView.register(VehicleTableViewCell.self, forCellReuseIdentifier: "CELL")
         tblView.register(VehicleDetailTableViewCell.self, forCellReuseIdentifier: "CELL_DETAIL")
-
         tblView.delegate = self
         tblView.dataSource = self
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = 100
-       
         tblView.separatorStyle = .none;
-
         
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
         

@@ -13,9 +13,15 @@ class FilterTrainViewController: FormViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Filter"
+
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
         // Do any additional setup after loading the view.
-        form +++ Section("")
+        form +++
+            Section(""){section in
+                section.tag = "FilterSection"
+            }
+        
             <<< SwitchRow(){ row in
                 row.title = "Larm"
                 row.value = (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ShowTrainWithAlarmOnly
@@ -26,8 +32,6 @@ class FilterTrainViewController: FormViewController {
                     {
                         (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ShowTrainWithAlarmOnly = v
                     }
-                    
-                    
                 })
             
             <<< MultipleSelectorRow<String>() {
@@ -70,8 +74,7 @@ class FilterTrainViewController: FormViewController {
                 })
             <<< MultipleSelectorRow<String>() {
                 $0.title = "Detektorer"
-                 
-                //$0.options = (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.a
+                $0.tag = "DetektorerMultipleSelectorRow"
                 }.cellSetup({ (cell, row) in
                     var opt = [String]()
                     var sel = Set<String>()
@@ -117,7 +120,7 @@ class FilterTrainViewController: FormViewController {
             <<< PhoneRow()
             {
                 $0.title = "Tågnummer"
-                //$0.value = Int((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber)
+                $0.tag = "TågnummerRow"
                 }.onChange({ (row) in
                     if let v = row.value
                     {
@@ -146,8 +149,9 @@ class FilterTrainViewController: FormViewController {
             +++ Section("Datum")
             <<< DateRow(){
                 $0.title = "From"
-                //$0.value = Date(timeIntervalSinceReferenceDate: 0)
-                }.cellSetup({ (dateCell, DateRow) in
+                $0.tag = "DateRowFrom"
+
+            }.cellSetup({ (dateCell, DateRow) in
                     
                     if((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.FromDate.count>0)
                     {
@@ -172,7 +176,7 @@ class FilterTrainViewController: FormViewController {
                 })
             <<< DateRow(){
                 $0.title = "Tom"
-                //$0.value = Date(timeIntervalSinceReferenceDate: 0)
+                $0.tag = "DateRowTom"
                 }.cellSetup({ (dateCell, DateRow) in
                     if((UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ToDate.count>0)
                     {
@@ -191,9 +195,94 @@ class FilterTrainViewController: FormViewController {
                     }
                     
                 })
+            
+
+            +++ Section("Sortering"){section in
+                    section.tag = "SortSection"
+            
+                }
+
+            <<< PickerInputRow<String>("Sortering"){
+                $0.title = "Sortering"
+                $0.options = []
+                
+                
+                $0.options.append("Senaste")
+                $0.options.append("Äldsta")
+
+
+                if  (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.Sort == "LATEST"
+                {
+                    $0.value = $0.options[0]
+                }else
+                {
+                    $0.value = $0.options[1]
+                }
+            }.onChange({ (row) in
+            
+                if let v = row.value
+                {
+                    if v == "Senaste"
+                    {
+                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.Sort = "LATEST"
+                    }else
+                    {
+                        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.Sort = "OLDEST"
+                    }
+                }
+            })
+
+            +++ Section()
+        <<< ButtonRow() { (row: ButtonRow) -> Void in
+            row.title = "Rensa filter"
+            }
+            .onCellSelection { [weak self] (cell, row) in
+                
+                self?.clearFilter()
+                
+                
+                
+                let DetektorerMultipleSelectorRow = self?.form.rowBy(tag: "DetektorerMultipleSelectorRow") as? MultipleSelectorRow<String>
+                if let dmsr = DetektorerMultipleSelectorRow
+                {
+                    dmsr.value = nil
+                    dmsr.reload()
+                }
+
+                let TågnummerRow = self?.form.rowBy(tag: "TågnummerRow") as? PhoneRow
+                if let tn = TågnummerRow
+                {
+                    tn.value = nil
+                    tn.reload()
+                }
+                
+                let DateRowFrom = self?.form.rowBy(tag: "DateRowFrom") as? DateRow
+                if let drf = DateRowFrom
+                {
+                    drf.value = nil
+                    drf.reload()
+                }
+                let DateRowTom = self?.form.rowBy(tag: "DateRowTom") as? DateRow
+                if let drt = DateRowTom
+                {
+                    drt.value = nil
+                    drt.reload()
+                }
+
+        }
     }
     
 
+    fileprivate func clearFilter()
+    {
+        (UIApplication.shared.delegate as! AppDelegate).setFilters()
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.SelectedDetectorsDTOList.removeAll()
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.FromDate = ""
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.ToDate = ""
+        (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.TrainNumber = ""
+        
+
+    }
     
     
     

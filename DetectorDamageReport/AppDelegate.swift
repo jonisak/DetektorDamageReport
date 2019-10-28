@@ -24,11 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
 
-        
-        // Override point for customization after application launch.
-        var deviceTypeList = [DeviceTypeDTO]()
-        deviceTypeList.append(DeviceTypeDTO(deviceType: "HOTBOXHOTWHEEL", deviceTypeDisplayName: "Varmgång/Tjuvbroms detektor", selected: true))
-        deviceTypeList.append(DeviceTypeDTO(deviceType: "WHEELDAMAGE", deviceTypeDisplayName: "Hjulskadedetektor", selected: true))
+        self.setFilters();
 
         
         
@@ -38,7 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 3, name: "Annat"))
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 4, name: "Inga avvikelser Funna"))
 
-        self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:true, deviceTypeDTOList: deviceTypeList, selectedDetectorsDTOList: [DetectorDTO]())
         
         /*
         UINavigationBar.appearance().backgroundColor = UIColor.init(red: 204.0, green: 46.0, blue: 44.0, alpha: 1.0)
@@ -51,9 +46,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UINavigationBar.appearance().backgroundColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().barTintColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
-
+        
         UIBarButtonItem.appearance().tintColor = UIColor.white
 
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+
+        
         //UIButton.appearance().tintColor = UIColor.white
         //UIButton.appearance().backgroundColor = UIColor(red: 204.0/255.0, green: 46.0/255.0, blue: 44.0/255.0, alpha: 1.0)
         
@@ -95,7 +93,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     
-    
+    func setFilters()
+    {
+        
+        self.trainFilterDTO = nil
+        
+        
+        // Override point for customization after application launch.
+        var deviceTypeList = [DeviceTypeDTO]()
+        deviceTypeList.append(DeviceTypeDTO(deviceType: "HOTBOXHOTWHEEL", deviceTypeDisplayName: "Varmgång/Tjuvbroms detektor", selected: true))
+        deviceTypeList.append(DeviceTypeDTO(deviceType: "WHEELDAMAGE", deviceTypeDisplayName: "Hjulskadedetektor", selected: true))
+        self.trainFilterDTO = TrainFilterDTO(maxResultCount: 1000, page: 1, pageSize: 20 ,showTrainWithAlarmOnly:false, deviceTypeDTOList: deviceTypeList, selectedDetectorsDTOList: [DetectorDTO](), sort: "LATEST")
+
+    }
     
     
     func applicationWillResignActive(_ application: UIApplication) {

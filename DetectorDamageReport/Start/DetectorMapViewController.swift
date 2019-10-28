@@ -67,8 +67,6 @@ class DetectorMapViewController: UIViewController, MKMapViewDelegate {
       // 2
       guard let annotation = annotation as? DetectorAnnotation else { return nil }
 
-        
-        
         // 3
       let identifier = "marker"
       var view: MKMarkerAnnotationView
