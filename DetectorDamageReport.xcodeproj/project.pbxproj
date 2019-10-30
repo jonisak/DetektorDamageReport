@@ -36,6 +36,8 @@
 		5B82924722DDDB8A0060B477 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 5B82924622DDDB8A0060B477 /* Podfile */; };
 		5B865E59230ECAA5001C86CE /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B865E58230ECAA5001C86CE /* DateExtension.swift */; };
 		5B865E5C230ED8CA001C86CE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B865E5B230ED8CA001C86CE /* SettingsViewController.swift */; };
+		5BA23DA42368C6D20070CFB9 /* UITableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA23DA32368C6D20070CFB9 /* UITableViewExtension.swift */; };
+		5BA23DA7236A24510070CFB9 /* ListAlarmsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA23DA6236A24510070CFB9 /* ListAlarmsViewController.swift */; };
 		5BBA39902300A9CE005822D2 /* TrainFilterDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBA398F2300A9CE005822D2 /* TrainFilterDTO.swift */; };
 		5BC2110E2358E03000BC2890 /* ImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2110D2358E03000BC2890 /* ImageExtension.swift */; };
 		5BD7EEAE23550CA400B2A9DA /* DetectorDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD7EEAD23550CA400B2A9DA /* DetectorDTO.swift */; };
@@ -76,6 +78,8 @@
 		5B82924622DDDB8A0060B477 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		5B865E58230ECAA5001C86CE /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		5B865E5B230ED8CA001C86CE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		5BA23DA32368C6D20070CFB9 /* UITableViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewExtension.swift; sourceTree = "<group>"; };
+		5BA23DA6236A24510070CFB9 /* ListAlarmsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListAlarmsViewController.swift; sourceTree = "<group>"; };
 		5BBA398F2300A9CE005822D2 /* TrainFilterDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainFilterDTO.swift; sourceTree = "<group>"; };
 		5BC2110D2358E03000BC2890 /* ImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtension.swift; sourceTree = "<group>"; };
 		5BD7EEAD23550CA400B2A9DA /* DetectorDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectorDTO.swift; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				5B865E58230ECAA5001C86CE /* DateExtension.swift */,
 				5B6AAC20231474980084AB12 /* StringExtension.swift */,
 				5BC2110D2358E03000BC2890 /* ImageExtension.swift */,
+				5BA23DA32368C6D20070CFB9 /* UITableViewExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -144,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */,
+				5BA23DA6236A24510070CFB9 /* ListAlarmsViewController.swift */,
 			);
 			path = ReportAlarm;
 			sourceTree = "<group>";
@@ -394,6 +400,7 @@
 				5B7FF67022E08F57007C40D6 /* VehicleDTO.swift in Sources */,
 				5B08540122E6E55300CFDB2E /* WheelDTO.swift in Sources */,
 				5BD7EEB0235627AA00B2A9DA /* DetectorMapViewController.swift in Sources */,
+				5BA23DA42368C6D20070CFB9 /* UITableViewExtension.swift in Sources */,
 				5B0853F922E6E00F00CFDB2E /* HotBoxHotWheelMeasureWheelDataDTO.swift in Sources */,
 				5B865E59230ECAA5001C86CE /* DateExtension.swift in Sources */,
 				5B0853F522E6DD9C00CFDB2E /* AlertDTO.swift in Sources */,
@@ -404,6 +411,7 @@
 				5B48B8E42315C3E30024DA20 /* AlarmReportDTO.swift in Sources */,
 				5B82924522DDD72E0060B477 /* StartViewController.swift in Sources */,
 				5BF721E5230DE71900CF6228 /* TrainListDTO.swift in Sources */,
+				5BA23DA7236A24510070CFB9 /* ListAlarmsViewController.swift in Sources */,
 				5B0853FB22E6E41100CFDB2E /* WheelDamageMeasureDataAxleDTO.swift in Sources */,
 				5B865E5C230ED8CA001C86CE /* SettingsViewController.swift in Sources */,
 			);
