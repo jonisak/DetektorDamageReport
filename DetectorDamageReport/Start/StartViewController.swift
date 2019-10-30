@@ -38,26 +38,21 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.view.addSubview(tblView)
         self.view.addSubview(standAloneIndicator)
 
-        
-        //let filterBtn = UIBarButtonItem(title: "Filtrera", style: .plain, target: self, action: #selector(self.openFilterViewController))
-        //self.navigationController?.navigationBar.topItem?.leftBarButtonItem = filterBtn
-        //navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.openFilterViewController))
-        //self.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.openFilterViewController))
-        
         let filterBtn = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(self.openFilterViewController))
         filterBtn.tintColor = UIColor.white
         self.navigationItem.rightBarButtonItem = filterBtn
         
-        
-        
-        //let mapBtn = UIBarButtonItem(title: "Kartan", style: .plain, target: self, action: #selector(self.openDetectorMapViewController))
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(self.openDetectorMapViewController))
+        let mapButton = UIButton()
+        mapButton.setTitle("Karta", for: .normal)
+        mapButton.sizeToFit()
+        let mapBarButton = UIBarButtonItem(customView: mapButton)
+        navigationItem.leftBarButtonItem = mapBarButton
+        mapButton.addTarget(self, action: #selector(self.openDetectorMapViewController), for: .touchUpInside)
 
+        
         
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
-        
         standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
-
         standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
         standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
         
@@ -264,6 +259,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if(self.trainListDTO.count==0)
         {
+            self.tblView.setEmptyMessage("Hittade inga tåg")
+
             return 0;
         }
         
@@ -321,7 +318,16 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         
         cell.layoutViews(trainListDTO: self.trainListDTO[indexPath.row])
-        cell.sentLabel.text = "Datum: " + self.trainListDTO[indexPath.row].MessageSent
+        
+        
+        if let isoDatum = self.trainListDTO[indexPath.row].MessageSent.iso8601
+        {
+            cell.sentLabel.text = "Datum: " + DateFormatter.localizedString(from: isoDatum, dateStyle: .short, timeStyle: .medium)
+        }else
+        {
+            cell.sentLabel.text = "Datum: " + self.trainListDTO[indexPath.row].MessageSent
+        }
+        
         
         if let detector = self.trainListDTO[indexPath.row].Detector
         {
@@ -366,6 +372,17 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         {
             cell.warningImageView.isHidden = true
         }
+        
+        let bottomLineView = UIView(frame: CGRect(x: 0, y: cell.bounds.size.height-1, width: self.view.bounds.size.width, height: 1))
+        bottomLineView.translatesAutoresizingMaskIntoConstraints = false
+        bottomLineView.backgroundColor = UIColor.gray
+        cell.addSubview(bottomLineView)
+    
+        bottomLineView.translatesAutoresizingMaskIntoConstraints = false;
+        bottomLineView.backgroundColor = UIColor.gray
+        bottomLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        bottomLineView.widthAnchor.constraint(equalTo: cell.widthAnchor).isActive = true
+        bottomLineView.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: 0).isActive = true;
         return cell;
     }
         
@@ -391,3 +408,5 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
 
 }
+
+

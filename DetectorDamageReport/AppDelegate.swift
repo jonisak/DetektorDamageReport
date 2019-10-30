@@ -60,7 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIToolbar.appearance().tintColor = UIColor.black
         UIToolbar.appearance().backgroundColor = UIColor.black
 
-        
+        UITabBar.appearance().barTintColor = .black
+        UITabBar.appearance().tintColor = .white
         
         
         //UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]

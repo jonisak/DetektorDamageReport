@@ -66,8 +66,22 @@ class TrainTableViewCell: UITableViewCell {
         t.translatesAutoresizingMaskIntoConstraints = false;
         return t;
     }()
-    
-    
+    /*
+    var bottomView: UIView = {
+        let v = UIView()
+        
+        v.translatesAutoresizingMaskIntoConstraints = false;
+        return v;
+    }()
+ */
+    /*
+    var bottomAccView: UIView = {
+        let v = UIView()
+        
+        v.translatesAutoresizingMaskIntoConstraints = false;
+        return v;
+    }()
+    */
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none;
@@ -100,6 +114,11 @@ class TrainTableViewCell: UITableViewCell {
         self.contentView.addSubview(trainNumberLabel)
         self.contentView.addSubview(trainDirectionLabel)
         self.contentView.addSubview(vehicleCountLabel)
+        //self.contentView.addSubview(bottomView)
+
+        //self.accessoryView?.addSubview(bottomAccView)
+        
+        
         
         messageTypeLabel.translatesAutoresizingMaskIntoConstraints = false;
         messageTypeLabel.backgroundColor = UIColor.white
@@ -166,6 +185,28 @@ class TrainTableViewCell: UITableViewCell {
         vehicleCountLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor).isActive = true
         vehicleCountLabel.topAnchor.constraint(equalTo: trainDirectionLabel.bottomAnchor, constant: 10).isActive = true;
         vehicleCountLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 10).isActive = true;
+        
+        /*
+        bottomView.translatesAutoresizingMaskIntoConstraints = false;
+        bottomView.backgroundColor = UIColor.gray
+        bottomView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        bottomView.widthAnchor.constraint(equalTo: self.contentView.widthAnchor).isActive = true
+        bottomView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0).isActive = true;
+*/
+        
+        /*
+        if let acc = self.accessoryView
+        {
+            bottomAccView.translatesAutoresizingMaskIntoConstraints = false;
+            bottomAccView.backgroundColor = UIColor.gray
+            bottomAccView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+            bottomAccView.widthAnchor.constraint(equalTo: acc.widthAnchor).isActive = true
+            bottomAccView.bottomAnchor.constraint(equalTo: acc.bottomAnchor, constant: 0).isActive = true;
+
+        }
+*/
+        
+        
         
     }
     

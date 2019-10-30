@@ -23,29 +23,36 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         // Create Tab one
         let start = StartViewController()
         
+        let img_train_icon = UIImage(named: "train_icon")?.resize(withSize: CGSize.init(width: 30.0, height: 30.0))
+        let img_settings_icon = UIImage(named: "settings_icon")?.resize(withSize: CGSize.init(width: 30.0, height: 30.0))
+        let img_transaction_list_icon = UIImage(named: "transaction_list")?.resize(withSize: CGSize.init(width: 30.0, height: 30.0))
+
         
-        let tabTrainBarItem = UITabBarItem(title: "Tåg", image: UIImage(named: "train_icon"), selectedImage: nil)
+        
+        let tabTrainBarItem = UITabBarItem(title: "Tåg", image: img_train_icon, selectedImage: nil)
 
-        let nav = UINavigationController(rootViewController: start)
-        nav.tabBarItem = tabTrainBarItem
+        let navTrain = UINavigationController(rootViewController: start)
+        navTrain.tabBarItem = tabTrainBarItem
     
-        let tabTwo = SettingsViewController()
-        let tabSettingsBarItem = UITabBarItem(title: "Inställningar", image: UIImage(named: "settings_icon"), selectedImage: nil)
-
+        
+        let navSettings = UINavigationController(rootViewController: SettingsViewController())
+        let tabTwo = navSettings
+        let tabSettingsBarItem = UITabBarItem(title: "Inställningar", image: img_settings_icon, selectedImage: nil)
         tabTwo.tabBarItem = tabSettingsBarItem
 
         
-        //start.tabBarItem = tabOneBarItem
         
-        /*
-        // Create Tab two
-        let tabTwo = TabTwoViewController()
-        let tabTwoBarItem2 = UITabBarItem(title: "Tab 2", image: UIImage(named: "defaultImage2.png"), selectedImage: UIImage(named: "selectedImage2.png"))
         
-        tabTwo.tabBarItem = tabTwoBarItem2
-        */
+        let navAlarmList = UINavigationController(rootViewController: ListAlarmsViewController())
+        let tabThree = navAlarmList
+        let tabAlarmListBarItem = UITabBarItem(title: "Larm", image: img_transaction_list_icon, selectedImage: nil)
+        tabThree.tabBarItem = tabAlarmListBarItem
+
         
-        self.viewControllers = [nav, tabTwo]
+        
+        
+        
+        self.viewControllers = [navTrain, tabThree, navSettings]
     }
     
     // UITabBarControllerDelegate method

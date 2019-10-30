@@ -35,6 +35,10 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.view.addSubview(tblView)
         self.view.addSubview(standAloneIndicator)
         
+        if let det = trainListDTO.Detector?.Name
+        {
+            self.navigationItem.title = det
+        }
         
         tblView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         tblView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
@@ -49,9 +53,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         tblView.separatorStyle = .none;
         
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
-        
         standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
-
         standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
         standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
         

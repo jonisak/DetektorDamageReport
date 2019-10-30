@@ -23,22 +23,9 @@ class SettingsViewController: FormViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-/*
-        form +++
-             Section("Inloggningsuppgifter")
-            <<< EmailRow(){row in
-                row.title = "E-post"
-            }
-            
-            <<< PasswordRow(){ row in
-                row.title = "Lösenord"
-        }
-        <<< ButtonRow(){row in
-            row.title = "Spara"
-            
-        }
-        */
+       self.navigationItem.title = "Inställningar"
+
+
         
         form +++
             Section("")
@@ -51,20 +38,6 @@ class SettingsViewController: FormViewController {
                 {
                     row.value = KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!
                 }
-                
-                
-                
-                //row.add(rule: RuleEmail())
-                
-                //row.validationOptions = .validatesOnChange
-                /*
-                }.cellUpdate { cell, row in
-                    if !row.isValid {
-                        cell.titleLabel?.textColor = .red
-                    }
-                }.cellUpdate({ (cell, row) in
-                    cell.textLabel?.textColor =  UIColor(red: 170.0/255, green: 170.0/255.0, blue: 170.0/255, alpha: 1.0)
-                })*/
             }
             <<< PasswordRow(){ row in
                 row.title = "Lösenord"
