@@ -148,8 +148,8 @@
 		5B6AAC1A231464DC0084AB12 /* ReportAlarm */ = {
 			isa = PBXGroup;
 			children = (
-				5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */,
 				5BA23DA6236A24510070CFB9 /* ListAlarmsViewController.swift */,
+				5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */,
 			);
 			path = ReportAlarm;
 			sourceTree = "<group>";
