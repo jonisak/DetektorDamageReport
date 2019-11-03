@@ -121,16 +121,8 @@ class DetectorMapViewController: UIViewController, MKMapViewDelegate {
         self.closeView()
     }
 
-
-    
-    
-    
     @objc func closeView(){
         self.delegate?.reload()
         self.dismiss(animated: true, completion: nil)
     }
-    
-    
-    
-
 }

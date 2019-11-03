@@ -11,26 +11,40 @@ import Eureka
 import SwiftSpinner
 import Alamofire
 import SwiftKeychainWrapper
+import FTLinearActivityIndicator
 
 class ReportAlarmViewController : FormViewController {
-    
+    var trainListDTO:TrainListDTO!
     //var indexPath = 0
     var trainDTO : TrainDTO!
     var alarmReportReasonDTO : AlarmReportReasonDTO!
-
+    var isLoading:Bool = false;
+    var standAloneIndicator: FTLinearActivityIndicator =
+    {
+        let t = FTLinearActivityIndicator()
+        t.translatesAutoresizingMaskIntoConstraints = false;
+        return t;
+    }()
+    
+    var alarmReportDTO: AlarmReportDTO!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Rapportera larm"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
+     //   self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
+        self.view.addSubview(standAloneIndicator)
+        standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
+        standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
+        standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
+        standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
 
         
         form +++
-            
-
             Section("")
             <<< PickerRow<String>("Välj orsak") { (row : PickerRow<String>) -> Void in
-                
                 row.options = []
+                row.tag = "ReasonPicker"
                 for alarmReportReasonDTO in (UIApplication.shared.delegate as! AppDelegate).alarmReportReasonDTOList
                 {
                     row.options.append(alarmReportReasonDTO.Name);
@@ -48,25 +62,9 @@ class ReportAlarmViewController : FormViewController {
                             break;
                         }
                     }
-                    
-                    
-                   // s//elf.indexPath = self.index(ofAccessibilityElement: row.options)
-                    
-                    // print(row.indexPath)
-                /*
-                    if let row = row.indexPath
-                   {
-                    
-                    self.indexPath =  row.row
-                    }
- */
-                    
                 })
-//        Section("Kommentar")
-            
 
             <<< TextAreaRow(){
-                //$0.tag = tag
                 $0.placeholder = "Kommentar"
                 $0.textAreaHeight = .dynamic(initialTextViewHeight: 96)
                 $0.tag = "TEXT_AREA"
@@ -81,10 +79,96 @@ class ReportAlarmViewController : FormViewController {
         
     }
     
+    /*
     @objc func closeView(){
         self.dismiss(animated: true, completion: nil)
     }
+*/
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        getAlarmReport();
+    }
+    
+    
+    func getAlarmReport(){
+         if self.isLoading {
+             return;
+         }
 
+         standAloneIndicator.startAnimating()
+
+        
+        
+        var headers: HTTPHeaders!
+         if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
+         {
+             headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+         }
+         
+        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport" + "/" +  String(self.trainListDTO.TrainId), method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+             print("Request: \(String(describing: response.request))")   // original url request
+             print("Response: \(String(describing: response.response))") // http url response
+             print("Result: \(response.result)")                         // response serialization result
+
+            self.isLoading = false;
+            self.standAloneIndicator.stopAnimating()
+
+            if response.response?.statusCode == 404
+            {
+               // print("")
+            }
+            else if let err = response.error
+            {
+                let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: err.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                errorAlertMessage.addAction(okAction);
+                
+                self.present(errorAlertMessage, animated: true, completion: nil)
+                return;
+            }
+
+            
+             
+             if let d = response.data{
+                 do {
+                    let decoder = JSONDecoder() //or any other Decoder
+                    decoder.dateDecodingStrategy = .iso8601
+                    
+                    self.alarmReportDTO  = try decoder.decode(AlarmReportDTO.self, from: d)
+                    self.reloadForm()
+
+
+                 } catch {
+                    print(error)
+                    /*
+                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                     let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                     errorAlertMessage.addAction(okAction);
+                     
+                     self.present(errorAlertMessage, animated: true, completion: nil)
+                     */
+                 }
+                 
+             }
+         }
+         
+     }
+    
+    
+    
+    
+    fileprivate func reloadForm()
+    {
+        let pr = self.form.rowBy(tag: "ReasonPicker") as? PickerRow<String>
+        if let dmsr = pr
+        {
+            dmsr.value = self.alarmReportDTO.alarmReportReasonDTO.Name
+            dmsr.reload()
+        }
+    }
+    
+    
     func createAlarmReport()
     {
         
