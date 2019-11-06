@@ -9,9 +9,9 @@
 import Foundation
 
 struct AlarmReportDTO: Codable {
-    var AlarmReportId : Int
+    var AlarmReportId : Int?
     var alarmReportReasonDTO : AlarmReportReasonDTO
-    var trainDTo: TrainDTO
+    var TrainId: CLong
     var ReportedDateTime:String
     var Comment:String
 }

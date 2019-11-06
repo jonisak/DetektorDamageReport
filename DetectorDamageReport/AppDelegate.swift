@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 1, name: "Varmgång"))
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 2, name: "Tjuvbroms"))
         alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 3, name: "Annat"))
-        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 4, name: "Inga avvikelser Funna"))
+        alarmReportReasonDTOList.append(AlarmReportReasonDTO(alarmReportReasonId: 4, name: "Inga avvikelser funna"))
 
         
         /*

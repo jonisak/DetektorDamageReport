@@ -72,10 +72,14 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     @objc func openAlarmReport()
     {
+        /*
         let reportAlarmViewController =  ReportAlarmViewController()
-        reportAlarmViewController.trainDTO = self.trainDTO
+        reportAlarmViewController.trainListDTO =
+        
+        //reportAlarmViewController.trainDTO = self.trainDTO
         let nav = UINavigationController(rootViewController: reportAlarmViewController)
         self.present(nav, animated: true, completion: nil)
+ */
         
     }
     func fetchData(){

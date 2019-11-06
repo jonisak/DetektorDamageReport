@@ -13,5 +13,5 @@ target 'DetectorDamageReport' do
 
   pod "SwiftSpinner"
   pod 'FTLinearActivityIndicator'
-
+  pod 'CameraKit-iOS'
 end

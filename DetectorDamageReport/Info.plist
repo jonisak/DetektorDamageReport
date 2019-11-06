@@ -46,5 +46,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    
+    <!-- Required for photos and videos -->
+    <key>NSCameraUsageDescription</key>
+    <string>Ladda upp bilder till servern</string>
+
+    <!-- Optional for photos -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Ladda upp bilder till servern</string>
+
+    <!-- Optional for the demo app to copy the photos/videos to your photo library -->
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Ladda upp bilder till servern</string>
+    
+    
 </dict>
 </plist>

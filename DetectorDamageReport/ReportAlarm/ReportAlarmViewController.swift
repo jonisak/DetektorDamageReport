@@ -12,11 +12,12 @@ import SwiftSpinner
 import Alamofire
 import SwiftKeychainWrapper
 import FTLinearActivityIndicator
+import CameraKit_iOS
 
 class ReportAlarmViewController : FormViewController {
     var trainListDTO:TrainListDTO!
     //var indexPath = 0
-    var trainDTO : TrainDTO!
+    //var trainDTO : TrainDTO!
     var alarmReportReasonDTO : AlarmReportReasonDTO!
     var isLoading:Bool = false;
     var standAloneIndicator: FTLinearActivityIndicator =
@@ -26,13 +27,18 @@ class ReportAlarmViewController : FormViewController {
         return t;
     }()
     
-    var alarmReportDTO: AlarmReportDTO!
+    var alarmReportDTO: AlarmReportDTO?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Rapportera larm"
      //   self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(self.uploadImage)) //UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
+
+        
+        
         self.view.addSubview(standAloneIndicator)
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
         standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
@@ -67,7 +73,7 @@ class ReportAlarmViewController : FormViewController {
             <<< TextAreaRow(){
                 $0.placeholder = "Kommentar"
                 $0.textAreaHeight = .dynamic(initialTextViewHeight: 96)
-                $0.tag = "TEXT_AREA"
+                $0.tag = "CommentTextAreaRow"
         }
         
             <<< ButtonRow(){row in
@@ -76,6 +82,26 @@ class ReportAlarmViewController : FormViewController {
                 }.onCellSelection { [weak self] (cell, row) in
                     self?.createAlarmReport()
         }
+        
+    }
+    
+    @objc func  uploadImage(){
+        // Init a photo capture session
+        let session = CKFPhotoSession()
+        
+        // Use CKFVideoSession for video capture
+        // let session = CKFVideoSession()
+        
+        let previewView = CKFPreviewView(frame: self.view.bounds)
+        previewView.session = session
+        
+        
+        session.capture({ (image, settings) in
+            // TODO: Add your code here
+        }) { (error) in
+            // TODO: Handle error
+        }
+
         
     }
     
@@ -116,7 +142,8 @@ class ReportAlarmViewController : FormViewController {
 
             if response.response?.statusCode == 404
             {
-               // print("")
+                self.alarmReportDTO = nil
+                
             }
             else if let err = response.error
             {
@@ -136,6 +163,7 @@ class ReportAlarmViewController : FormViewController {
                     decoder.dateDecodingStrategy = .iso8601
                     
                     self.alarmReportDTO  = try decoder.decode(AlarmReportDTO.self, from: d)
+                    self.alarmReportReasonDTO = self.alarmReportDTO?.alarmReportReasonDTO
                     self.reloadForm()
 
 
@@ -161,17 +189,28 @@ class ReportAlarmViewController : FormViewController {
     fileprivate func reloadForm()
     {
         let pr = self.form.rowBy(tag: "ReasonPicker") as? PickerRow<String>
+        let textAreaRow = self.form.rowBy(tag: "CommentTextAreaRow") as! TextAreaRow
+
         if let dmsr = pr
         {
-            dmsr.value = self.alarmReportDTO.alarmReportReasonDTO.Name
-            dmsr.reload()
+            if let al = self.alarmReportDTO
+            {
+                dmsr.value = al.alarmReportReasonDTO.Name
+                print(al.alarmReportReasonDTO.Name)
+                print(dmsr.value)
+                dmsr.reload()
+
+                textAreaRow.value = al.Comment;
+                textAreaRow.reload()
+
+            }
+            
         }
     }
     
     
     func createAlarmReport()
     {
-        
         if form.validate().count != 0
         {
             return;
@@ -199,23 +238,31 @@ class ReportAlarmViewController : FormViewController {
             return;
         }
 
-    
+        let textAreaRow: TextAreaRow? = form.rowBy(tag: "CommentTextAreaRow")
+        var comment = ""
+        if let te = textAreaRow
+        {
+            if let v = te.value
+            {
+                comment = v
+            }
+        }
         
+        if self.alarmReportDTO != nil
+        {
+            self.alarmReportDTO?.Comment = comment
+        }else
+        {
+            self.alarmReportDTO = AlarmReportDTO(AlarmReportId: nil, alarmReportReasonDTO: self.alarmReportReasonDTO, TrainId: self.trainListDTO.TrainId, ReportedDateTime: Date.init().iso8601, Comment: comment)
+        }
         
-        
-        let textAreaRow: TextAreaRow? = form.rowBy(tag: "TEXT_AREA")
-
-        let comment = (textAreaRow?.value)!;
-
-        
-        let alarmReportDTO = AlarmReportDTO(AlarmReportId: 1, alarmReportReasonDTO: self.alarmReportReasonDTO, trainDTo: trainDTO, ReportedDateTime: Date.init().iso8601, Comment: comment)
-        
-        
+        self.alarmReportDTO?.alarmReportReasonDTO = self.alarmReportReasonDTO
+        print(self.alarmReportDTO?.alarmReportReasonDTO.Name)
         SwiftSpinner.show("Sparar...")
         
         
         // let appDel = UIApplication.shared.delegate as! AppDelegate
-        let requestString: String = (UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport"
+        let requestString: String = (UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport" + "/SaveAlarmReport"
         print(requestString)
         
         
@@ -227,19 +274,15 @@ class ReportAlarmViewController : FormViewController {
         
         
         var dict = [String: Any]()
-        //var jsonSring = ""
         do {
-            //  let encoder = JSONEncoder()
-            //  let data = try encoder.encode(pagingDTO)
-            //  jsonSring = String(data: data, encoding: .utf8)!
-            dict = try alarmReportDTO.asDictionary()
+            dict = try self.alarmReportDTO.asDictionary()
         }catch {
             print("Unexpected error: \(error).")
             return
         }
         
         
-        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport", method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+        AF.request(requestString, method: HTTPMethod.post, parameters: dict, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
             print("Request: \(String(describing: response.request))")   // original url request
             print("Response: \(String(describing: response.response))") // http url response
             print("Result: \(response.result)")                         // response serialization result
@@ -249,12 +292,10 @@ class ReportAlarmViewController : FormViewController {
             {
                 SwiftSpinner.hide()
                 
-                
-                
-                
-                let alert = UIAlertController(title: "Larmrapport skapad", message: "", preferredStyle: UIAlertController.Style.alert)
+                let alert = UIAlertController(title: "Larmrapport sparad", message: "", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action) in
-                    self.dismiss(animated: true, completion: nil)
+                    self.navigationController?.popViewController(animated: true)
+                    //self.dismiss(animated: true, completion: nil)
                 }))
                 
                 if let popoverController = alert.popoverPresentationController {
