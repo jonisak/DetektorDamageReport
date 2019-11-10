@@ -14,6 +14,6 @@ struct AlarmReportDTO: Codable {
     var TrainId: CLong
     var ReportedDateTime:String
     var Comment:String
+    var AlarmReportImageDTOList : [AlarmReportImageDTO]?
 }
-
 

@@ -8,10 +8,16 @@ target 'DetectorDamageReport' do
   # Pods for DetectorDamageReport
   pod 'Alamofire', '~> 5.0.0-beta.5'
   pod 'Eureka'
+  pod 'ImageRow', '~> 4.0'
+
   #pod 'SwiftDate'
   pod 'SwiftKeychainWrapper'
 
   pod "SwiftSpinner"
   pod 'FTLinearActivityIndicator'
-  pod 'CameraKit-iOS'
+  #pod 'CameraKit-iOS'
+  #pod "SwiftyCam"
+
+  
+  
 end

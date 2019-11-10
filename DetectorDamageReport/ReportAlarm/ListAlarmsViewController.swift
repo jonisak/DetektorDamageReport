@@ -127,9 +127,6 @@ class ListAlarmsViewController: UIViewController, UITableViewDelegate, UITableVi
             var dict = [String: Any]()
             //var jsonSring = ""
             do {
-              //  let encoder = JSONEncoder()
-              //  let data = try encoder.encode(pagingDTO)
-              //  jsonSring = String(data: data, encoding: .utf8)!
                 dict = try (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.asDictionary()
             }catch {
                 print("Unexpected error: \(error).")

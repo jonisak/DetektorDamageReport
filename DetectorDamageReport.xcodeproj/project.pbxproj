@@ -26,6 +26,11 @@
 		5B6AAC1C2314650D0084AB12 /* ReportAlarmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */; };
 		5B6AAC1F23146D7A0084AB12 /* AlarmReportReasonDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AAC1E23146D7A0084AB12 /* AlarmReportReasonDTO.swift */; };
 		5B6AAC21231474980084AB12 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6AAC20231474980084AB12 /* StringExtension.swift */; };
+		5B7BC68E2374B50F00185136 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7BC68D2374B50F00185136 /* CameraViewController.swift */; };
+		5B7BC6902374B8FC00185136 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7BC68F2374B8FB00185136 /* CameraController.swift */; };
+		5B7BC6922374C54800185136 /* AlarmReportImageBinDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7BC6912374C54800185136 /* AlarmReportImageBinDTO.swift */; };
+		5B7BC6942374C5A300185136 /* AlarmReportImageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7BC6932374C5A300185136 /* AlarmReportImageDTO.swift */; };
+		5B7BC6962374C63600185136 /* AlarmReportImageThumbnailBinDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7BC6952374C63600185136 /* AlarmReportImageThumbnailBinDTO.swift */; };
 		5B7CD9BA22E1D68100AABB44 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7CD9B922E1D68100AABB44 /* TabBarViewController.swift */; };
 		5B7FF66E22E08D68007C40D6 /* TrainDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7FF66D22E08D68007C40D6 /* TrainDTO.swift */; };
 		5B7FF67022E08F57007C40D6 /* VehicleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7FF66F22E08F57007C40D6 /* VehicleDTO.swift */; };
@@ -66,6 +71,11 @@
 		5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportAlarmViewController.swift; sourceTree = "<group>"; };
 		5B6AAC1E23146D7A0084AB12 /* AlarmReportReasonDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmReportReasonDTO.swift; sourceTree = "<group>"; };
 		5B6AAC20231474980084AB12 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		5B7BC68D2374B50F00185136 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		5B7BC68F2374B8FB00185136 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		5B7BC6912374C54800185136 /* AlarmReportImageBinDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmReportImageBinDTO.swift; sourceTree = "<group>"; };
+		5B7BC6932374C5A300185136 /* AlarmReportImageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmReportImageDTO.swift; sourceTree = "<group>"; };
+		5B7BC6952374C63600185136 /* AlarmReportImageThumbnailBinDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmReportImageThumbnailBinDTO.swift; sourceTree = "<group>"; };
 		5B7CD9B922E1D68100AABB44 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		5B7FF66D22E08D68007C40D6 /* TrainDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainDTO.swift; sourceTree = "<group>"; };
 		5B7FF66F22E08F57007C40D6 /* VehicleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleDTO.swift; sourceTree = "<group>"; };
@@ -150,6 +160,8 @@
 			children = (
 				5BA23DA6236A24510070CFB9 /* ListAlarmsViewController.swift */,
 				5B6AAC1B2314650D0084AB12 /* ReportAlarmViewController.swift */,
+				5B7BC68F2374B8FB00185136 /* CameraController.swift */,
+				5B7BC68D2374B50F00185136 /* CameraViewController.swift */,
 			);
 			path = ReportAlarm;
 			sourceTree = "<group>";
@@ -159,6 +171,9 @@
 			children = (
 				5B6AAC1E23146D7A0084AB12 /* AlarmReportReasonDTO.swift */,
 				5B48B8E32315C3E30024DA20 /* AlarmReportDTO.swift */,
+				5B7BC6932374C5A300185136 /* AlarmReportImageDTO.swift */,
+				5B7BC6912374C54800185136 /* AlarmReportImageBinDTO.swift */,
+				5B7BC6952374C63600185136 /* AlarmReportImageThumbnailBinDTO.swift */,
 			);
 			path = AlarmReport;
 			sourceTree = "<group>";
@@ -354,9 +369,9 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DetectorDamageReport/Pods-DetectorDamageReport-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/CameraKit-iOS/CameraKit_iOS.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/FTLinearActivityIndicator/FTLinearActivityIndicator.framework",
+				"${BUILT_PRODUCTS_DIR}/ImageRow/ImageRow.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftKeychainWrapper/SwiftKeychainWrapper.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftSpinner/SwiftSpinner.framework",
 			);
@@ -365,9 +380,9 @@
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CameraKit_iOS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FTLinearActivityIndicator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageRow.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftKeychainWrapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSpinner.framework",
 			);
@@ -383,19 +398,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B7BC6962374C63600185136 /* AlarmReportImageThumbnailBinDTO.swift in Sources */,
 				5B298CE022E1F4F300B1A852 /* VehicleTableViewCell.swift in Sources */,
 				5BC2110E2358E03000BC2890 /* ImageExtension.swift in Sources */,
 				5B5E0D5B22FD5AE200794F2C /* StructExtension.swift in Sources */,
+				5B7BC68E2374B50F00185136 /* CameraViewController.swift in Sources */,
 				5B0853FD22E6E46400CFDB2E /* WheelDamageMeasureDataVehicleDTO.swift in Sources */,
 				5B4EFCCB22E73A070066E8E5 /* LabelExtension.swift in Sources */,
 				5B08540322E6F59C00CFDB2E /* VehicleDetailTableViewCell.swift in Sources */,
+				5B7BC6942374C5A300185136 /* AlarmReportImageDTO.swift in Sources */,
 				5BD7EEAE23550CA400B2A9DA /* DetectorDTO.swift in Sources */,
 				5B6AAC21231474980084AB12 /* StringExtension.swift in Sources */,
+				5B7BC6902374B8FC00185136 /* CameraController.swift in Sources */,
 				5BBA39902300A9CE005822D2 /* TrainFilterDTO.swift in Sources */,
 				5B0853F722E6DE1B00CFDB2E /* AxleDTO.swift in Sources */,
 				5B6AAC1F23146D7A0084AB12 /* AlarmReportReasonDTO.swift in Sources */,
 				5B0853FF22E6E4B200CFDB2E /* WheelDamageMeasureDataWheelDTO.swift in Sources */,
 				5B7FF66E22E08D68007C40D6 /* TrainDTO.swift in Sources */,
+				5B7BC6922374C54800185136 /* AlarmReportImageBinDTO.swift in Sources */,
 				5B6AAC1C2314650D0084AB12 /* ReportAlarmViewController.swift in Sources */,
 				5B298CDE22E1ED4000B1A852 /* VehicleViewController.swift in Sources */,
 				5B82923322DDD5ED0060B477 /* AppDelegate.swift in Sources */,
