@@ -20,6 +20,9 @@ class ReportAlarmViewController : FormViewController {
     var trainListDTO:TrainListDTO!
     var alarmReportReasonDTO : AlarmReportReasonDTO!
     var isLoading:Bool = false;
+    var imagePicker: ImagePicker!
+
+    
     var standAloneIndicator: FTLinearActivityIndicator =
     {
         let t = FTLinearActivityIndicator()
@@ -34,7 +37,7 @@ class ReportAlarmViewController : FormViewController {
         super.viewDidLoad()
         self.navigationItem.title = "Rapportera larm"
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(self.uploadImage)) //UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(self.uploadImage(_:))) //UIBarButtonItem(title: "Stäng", style: UIBarButtonItem.Style.done, target: self, action: #selector(self.closeView))
 
         self.view.addSubview(standAloneIndicator)
         standAloneIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0).isActive = true
@@ -49,8 +52,14 @@ class ReportAlarmViewController : FormViewController {
         
     }
     
-    @objc func  uploadImage(){
+    @objc func  uploadImage(_ sender : UIButton){
+        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+        self.imagePicker.present(from: sender)
 
+        
+        
+        /*
+        
         let uialertController = UIAlertController(title: "Välj", message: "", preferredStyle: .actionSheet)
         let cameraAction = UIAlertAction(title: "Kamera", style: .default) { (action) in
             let cameraViewController = CameraViewController();
@@ -59,9 +68,15 @@ class ReportAlarmViewController : FormViewController {
             self.present(nav, animated: true, completion: nil)
         }
         uialertController.addAction(cameraAction);
+        
+        
+        
         let libraryAction = UIAlertAction(title: "Bibliotek", style: .default) { (action) in
             
             
+            
+            
+
             
             
         }
@@ -70,7 +85,7 @@ class ReportAlarmViewController : FormViewController {
         uialertController.addAction(cancelAction)
         self.present(uialertController, animated: true, completion: nil)
 
-
+*/
 
     }
     
@@ -442,5 +457,21 @@ class ReportAlarmViewController : FormViewController {
             
             
         }
+    }
+}
+extension ReportAlarmViewController: ImagePickerDelegate {
+
+    func didSelect(image: UIImage?) {
+        guard let image = image else {
+            return
+        }
+        let commentPhoto = CommentPhotoViewController()
+        commentPhoto.selectedImage = image
+        commentPhoto.alarmReportDTO = self.alarmReportDTO!
+
+        
+        
+        let nav = UINavigationController(rootViewController: commentPhoto)
+        self.present(nav, animated: true, completion: nil)
     }
 }
