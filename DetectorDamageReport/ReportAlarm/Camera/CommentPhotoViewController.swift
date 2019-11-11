@@ -12,11 +12,26 @@ import UIKit
 import Alamofire
 import SwiftKeychainWrapper
 import SwiftSpinner
+import FTLinearActivityIndicator
+
+
+protocol reloadDelegate {
+    func reload()
+}
+
+enum CommentPhotoMode {
+    case new
+    case edit
+}
+
 
 class CommentPhotoViewController: UIViewController {
+    var delegate:reloadDelegate?
+    var mode: CommentPhotoMode!
+    var isLoading:Bool = false;
 
     var alarmReportDTO: AlarmReportDTO?
-
+    var AlarmReportImageId : Int? = nil
     var selectedImage = UIImage()
     var photoImageview: UIImageView =
     {
@@ -37,7 +52,13 @@ class CommentPhotoViewController: UIViewController {
         return t;
     }()
 
-    
+    var standAloneIndicator: FTLinearActivityIndicator =
+    {
+        let t = FTLinearActivityIndicator()
+        t.translatesAutoresizingMaskIntoConstraints = false;
+        return t;
+    }()
+
     
     
     override func viewDidLoad() {
@@ -45,7 +66,25 @@ class CommentPhotoViewController: UIViewController {
         self.view.backgroundColor = UIColor.black
         self.view.addSubview(commentTextView)
         self.view.addSubview(photoImageview)
+        self.view.addSubview(standAloneIndicator)
 
+        if self.mode == CommentPhotoMode.edit
+        {
+            
+            self.fetchImage()
+            commentTextView.isUserInteractionEnabled = false;
+            let deleteutton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.trash, target: self, action: #selector(self.deleteImage))
+            navigationItem.rightBarButtonItem = deleteutton
+        }else
+        {
+            let uploadButton = UIButton()
+            uploadButton.setTitle("Ladda upp", for: .normal)
+            uploadButton.sizeToFit()
+            let uploadBarButton = UIBarButtonItem(customView: uploadButton)
+            navigationItem.rightBarButtonItem = uploadBarButton
+            uploadButton.addTarget(self, action: #selector(self.uploadImage), for: .touchUpInside)
+        }
+        
         
         commentTextView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 70).isActive = true
          
@@ -77,12 +116,7 @@ class CommentPhotoViewController: UIViewController {
         navigationItem.leftBarButtonItem = cancelBarButton
         cancelButton.addTarget(self, action: #selector(self.cancelImageEditing), for: .touchUpInside)
         
-        let uploadButton = UIButton()
-        uploadButton.setTitle("Ladda upp", for: .normal)
-        uploadButton.sizeToFit()
-        let uploadBarButton = UIBarButtonItem(customView: uploadButton)
-        navigationItem.rightBarButtonItem = uploadBarButton
-        uploadButton.addTarget(self, action: #selector(self.uploadImage), for: .touchUpInside)
+
     }
 
     @objc func tapDone(sender: Any) {
@@ -143,6 +177,8 @@ class CommentPhotoViewController: UIViewController {
                 let uploadedMessage = UIAlertController(title: "Bild uppladdad", message: "", preferredStyle: .alert)
                 
                 let okAction = UIAlertAction(title: "Ok", style: .default) { (action) in
+                    self.delegate?.reload()
+
                     self.dismiss(animated: true, completion: nil)
                 }
                 uploadedMessage.addAction(okAction);
@@ -150,5 +186,126 @@ class CommentPhotoViewController: UIViewController {
             }
 
     }
+    
+    
+    
+    func fetchImage(){
+        if self.isLoading {
+            return;
+        }
+
+        standAloneIndicator.startAnimating()
+
+    
+        var headers: HTTPHeaders!
+        if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
+        {
+            headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+        }
+        
+        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport/GetAlarmReportImage/" +  String(self.AlarmReportImageId!), method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
+            print("Request: \(String(describing: response.request))")   // original url request
+            print("Response: \(String(describing: response.response))") // http url response
+            print("Result: \(response.result)")                         // response serialization result
+            self.isLoading = false;
+            self.standAloneIndicator.stopAnimating()
+
+            
+            if let err = response.error
+            {
+                let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: err.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                errorAlertMessage.addAction(okAction);
+                
+                self.present(errorAlertMessage, animated: true, completion: nil)
+                return;
+            }
+            
+            
+            if let d = response.data{
+                do {
+                    let decoder = JSONDecoder() //or any other Decoder
+                    decoder.dateDecodingStrategy = .iso8601
+                    let tr = try decoder.decode(AlarmReportImageDTO.self, from: d)
+                    
+                    if let img = tr.AlarmReportImageBinDTO
+                    {
+                        let decodedData = Data(base64Encoded: img.Image, options: NSData.Base64DecodingOptions(rawValue: 0))
+                        let decodedimage = UIImage(data: decodedData!)
+                        self.photoImageview.image =  decodedimage
+                        DispatchQueue.main.async {
+                            self.photoImageview.reloadInputViews()
+                        }
+                    }
+                   
+              
+                } catch {
+                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                    errorAlertMessage.addAction(okAction);
+                    
+                    self.present(errorAlertMessage, animated: true, completion: nil)
+                    
+                }
+                
+            }
+        }
+        
+    }
+    @objc func deleteImage(){
+      
+        
+        let alertController = UIAlertController(title: "Är du säker på att du vill ta bort denna bild?", message: "", preferredStyle: .actionSheet)
+        let okAction = UIAlertAction(title: "Ok", style: .default) { (action) in
+            
+            
+            
+                   if self.isLoading {
+                         return;
+                     }
+
+            self.standAloneIndicator.startAnimating()
+
+            
+                var headers: HTTPHeaders!
+                if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
+                {
+                    headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
+                }
+                
+               AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport/DeleteAlarmReportImage/" +  String(self.AlarmReportImageId!), method: HTTPMethod.delete, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).response { (response) in
+                    print("Request: \(String(describing: response.request))")   // original url request
+                    //print("Response: \(String(describing: ))") // http url response
+                    print("Result: \(response.result)")                         // response serialization result
+                    self.isLoading = false;
+                    self.standAloneIndicator.stopAnimating()
+
+                    
+                    if let err = response.error
+                    {
+                        let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: err.localizedDescription, preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                        errorAlertMessage.addAction(okAction);
+                        
+                        self.present(errorAlertMessage, animated: true, completion: nil)
+                        return;
+                    }
+                    
+                   if response.response?.statusCode == 200
+                   {
+                       self.delegate?.reload()
+                       self.dismiss(animated: true, completion: nil)
+                   }
+                }
+        }
+        let cancelAction = UIAlertAction(title: "Avbryt", style: UIAlertAction.Style.cancel, handler: nil)
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
+        
+ 
+     }
+    
+    
 }
 

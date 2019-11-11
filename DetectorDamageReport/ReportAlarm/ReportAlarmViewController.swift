@@ -13,10 +13,12 @@ import Alamofire
 import SwiftKeychainWrapper
 import FTLinearActivityIndicator
 import ImageRow
-
+import ViewRow
 
 
 class ReportAlarmViewController : FormViewController {
+
+    
     var trainListDTO:TrainListDTO!
     var alarmReportReasonDTO : AlarmReportReasonDTO!
     var isLoading:Bool = false;
@@ -44,49 +46,11 @@ class ReportAlarmViewController : FormViewController {
         standAloneIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0).isActive = true
         standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
         standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
-
-       
-        
-        
-
-        
     }
     
     @objc func  uploadImage(_ sender : UIButton){
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         self.imagePicker.present(from: sender)
-
-        
-        
-        /*
-        
-        let uialertController = UIAlertController(title: "Välj", message: "", preferredStyle: .actionSheet)
-        let cameraAction = UIAlertAction(title: "Kamera", style: .default) { (action) in
-            let cameraViewController = CameraViewController();
-            cameraViewController.alarmReportDTO = self.alarmReportDTO
-            let nav = UINavigationController(rootViewController: cameraViewController);
-            self.present(nav, animated: true, completion: nil)
-        }
-        uialertController.addAction(cameraAction);
-        
-        
-        
-        let libraryAction = UIAlertAction(title: "Bibliotek", style: .default) { (action) in
-            
-            
-            
-            
-
-            
-            
-        }
-        uialertController.addAction(libraryAction)
-        let cancelAction = UIAlertAction(title: "Avbryt", style: .cancel, handler: nil)
-        uialertController.addAction(cancelAction)
-        self.present(uialertController, animated: true, completion: nil)
-
-*/
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -95,68 +59,11 @@ class ReportAlarmViewController : FormViewController {
          //self.fetchData()
     }
     
-    
-    /*
-    func fetchData(){
-        if self.isLoading {
-            return;
-        }
-
-        standAloneIndicator.startAnimating()
-
-  
-    
-        var headers: HTTPHeaders!
-        if KeychainWrapper.standard.string(forKey: "detectordamagereport_email") != nil && KeychainWrapper.standard.string(forKey: "detectordamagereport_password") != nil
-        {
-            headers = [.authorization(username: KeychainWrapper.standard.string(forKey: "detectordamagereport_email")!, password: KeychainWrapper.standard.string(forKey: "detectordamagereport_password")!)]
-        }
-        
-        AF.request((UIApplication.shared.delegate as! AppDelegate).WebapiURL +  "AlarmReport/GetAlarmReportById", method: HTTPMethod.get, parameters: nil, encoding: JSONEncoding.default, headers: headers, interceptor: nil).responseJSON { (response) in
-            print("Request: \(String(describing: response.request))")   // original url request
-            print("Response: \(String(describing: response.response))") // http url response
-            print("Result: \(response.result)")                         // response serialization result
-            self.isLoading = false;
-            self.standAloneIndicator.stopAnimating()
-
-            
-            if let err = response.error
-            {
-                let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: err.localizedDescription, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                errorAlertMessage.addAction(okAction);
-                
-                self.present(errorAlertMessage, animated: true, completion: nil)
-                return;
-            }
-            
-            
-            if let d = response.data{
-                do {
-                    let decoder = JSONDecoder() //or any other Decoder
-                    decoder.dateDecodingStrategy = .iso8601
-                    let tr = try decoder.decode(AlarmReportDTO.self, from: d)
-                    self.alarmReportDTO = tr
-
-                    
-                    
-                    DispatchQueue.main.async {
-                        self.reloadForm()
-                    }
-                } catch {
-                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                    errorAlertMessage.addAction(okAction);
-                    
-                    self.present(errorAlertMessage, animated: true, completion: nil)
-                    
-                }
-                
-            }
-        }
-        
+    func reload() {
+        getAlarmReport();
     }
-    */
+    
+    
     
     func getAlarmReport(){
          if self.isLoading {
@@ -298,26 +205,46 @@ class ReportAlarmViewController : FormViewController {
                         let decodedData = Data(base64Encoded: thumbnailDTO.Image, options: NSData.Base64DecodingOptions(rawValue: 0))
                         let decodedimage = UIImage(data: decodedData!)
                         
-                        let imageRow = ImageRow(tag: String(img.AlarmReportImageId!))
-                        ImageRow.defaultCellUpdate = { cell, row in
-                            cell.accessoryView?.layer.cornerRadius = 35
-                            cell.accessoryView?.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-                        }
-                        imageRow.cellSetup { cell, row in
+                        
+                        
+                        
+                        let viewRow = ViewRow(tag: String(img.AlarmReportImageId!))
+                        viewRow.cellSetup({ (cell, row) in
+                                                          //  Construct the view for the cell
+                            cell.view = UIImageView()
+                            cell.contentView.addSubview(cell.view!)
+                            
+                            //  Get something to display
+                           // let image = UIImage(named: "trees")
                             cell.imageView?.image = decodedimage
+                            //cell.view!.image = image
+                            
+                            //  Make the image view occupy the entire row:
+                            cell.viewRightMargin = 0.0
+                            cell.viewLeftMargin = 0.0
+                            cell.viewTopMargin = 0.0
+                            cell.viewBottomMargin = 0.0
+                            cell.imageView?.layer.cornerRadius = 16;
+                            cell.imageView?.clipsToBounds = true;
+                            row.title = img.Description
+                            row.tag = String(img.AlarmReportImageId!)
+                            //  Define the cell's height
+                            cell.height = { return CGFloat(120) }
+                        })
+
                         
-                            row.cell.height = {
-                                return 120
-                            }                        }
-                        imageRow.onCellSelection { (cell, row) in
+                        viewRow.onCellSelection { (cell, row) in
+                            let commentPhotoViewController = CommentPhotoViewController()
+                            commentPhotoViewController.mode = .edit
+                            commentPhotoViewController.alarmReportDTO = self.alarmReportDTO!
+                            commentPhotoViewController.AlarmReportImageId = Int(row.tag!)
+                            commentPhotoViewController.delegate = self
                             
-                            
-                            
-                            
+
+                            let nav = UINavigationController(rootViewController: commentPhotoViewController)
+                            self.present(nav, animated: true, completion: nil)
                         }
-                        
-                        
-                        bilderSection.append(imageRow)
+                        bilderSection.append(viewRow);
                     }
                     
                 }
@@ -459,7 +386,7 @@ class ReportAlarmViewController : FormViewController {
         }
     }
 }
-extension ReportAlarmViewController: ImagePickerDelegate {
+extension ReportAlarmViewController: ImagePickerDelegate, reloadDelegate {
 
     func didSelect(image: UIImage?) {
         guard let image = image else {
@@ -468,10 +395,12 @@ extension ReportAlarmViewController: ImagePickerDelegate {
         let commentPhoto = CommentPhotoViewController()
         commentPhoto.selectedImage = image
         commentPhoto.alarmReportDTO = self.alarmReportDTO!
+        commentPhoto.mode = .new
+        commentPhoto.delegate = self
 
-        
-        
         let nav = UINavigationController(rootViewController: commentPhoto)
         self.present(nav, animated: true, completion: nil)
+        
     }
+    
 }

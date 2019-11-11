@@ -18,6 +18,7 @@ target 'DetectorDamageReport' do
   #pod 'CameraKit-iOS'
   #pod "SwiftyCam"
 
+  pod "ViewRow"
   
   
 end
