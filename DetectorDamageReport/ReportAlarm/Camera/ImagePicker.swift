@@ -37,6 +37,8 @@ open class ImagePicker: NSObject {
         
         return UIAlertAction(title: title, style: .default) { [unowned self] _ in
             self.pickerController.sourceType = type
+            
+            
             self.presentationController?.present(self.pickerController, animated: true)
         }
     }
@@ -63,12 +65,12 @@ open class ImagePicker: NSObject {
             alertController.popoverPresentationController?.permittedArrowDirections = [.down, .up]
         }
 
+        
         self.presentationController?.present(alertController, animated: true)
     }
     
     private func pickerController(_ controller: UIImagePickerController, didSelect image: UIImage?) {
         controller.dismiss(animated: true, completion: nil)
-        
         self.delegate?.didSelect(image: image)
     }
 }
@@ -89,5 +91,9 @@ extension ImagePicker: UIImagePickerControllerDelegate {
 }
 
 extension ImagePicker: UINavigationControllerDelegate {
+    
+    
+    
+    
     
 }

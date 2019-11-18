@@ -49,18 +49,70 @@ class ReportAlarmViewController : FormViewController {
     }
     
     @objc func  uploadImage(_ sender : UIButton){
+      
+        if self.alarmReportDTO == nil
+        {
+            let sameImageAlertController = UIAlertController(title: "", message: "Du måste spara larmrapporten innan du kan ladda upp en bild", preferredStyle: .alert)
+            sameImageAlertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                
+                
+            }))
+            self.present(sameImageAlertController, animated: true, completion: nil)
+            return;
+        }
+        
+        /*
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
         self.imagePicker.present(from: sender)
+        */
+        
+        let alert = UIAlertController(title: "Ladda upp bild", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Kamera", style: .default, handler: { _ in
+            self.openCamera()
+        }))
+
+        alert.addAction(UIAlertAction(title: "Galleri", style: .default, handler: { _ in
+            self.openGallery(sourceType: UIImagePickerController.SourceType.photoLibrary)
+        }))
+
+        alert.addAction(UIAlertAction(title: "Kamerarulle", style: .default, handler: { _ in
+            self.openGallery(sourceType: UIImagePickerController.SourceType.savedPhotosAlbum)
+        }))
+
+        
+        alert.addAction(UIAlertAction.init(title: "Avbryt", style: .cancel, handler: nil))
+
+        self.present(alert, animated: true, completion: nil)
+        
+
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        getAlarmReport();
+        
+        if self.trainListDTO.TrainHasAlarmItemReported == true
+        {
+             getAlarmReport();
+        }else
+        {
+             self.reloadForm()
+        }
+        
+        
+       
          //self.fetchData()
     }
     
     func reload() {
-        getAlarmReport();
+        if self.trainListDTO.TrainHasAlarmItemReported == true
+        {
+            getAlarmReport();
+        }else
+        {
+            self.reloadForm()
+        }
     }
     
     
@@ -117,13 +169,13 @@ class ReportAlarmViewController : FormViewController {
 
                  } catch {
                     print(error)
-                    /*
+                    
                     let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
                      let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
                      errorAlertMessage.addAction(okAction);
                      
                      self.present(errorAlertMessage, animated: true, completion: nil)
-                     */
+                     
                  }
                  
              }
@@ -339,7 +391,28 @@ class ReportAlarmViewController : FormViewController {
                 
                 let alert = UIAlertController(title: "Larmrapport sparad", message: "", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action) in
-                    self.navigationController?.popViewController(animated: true)
+                    //self.navigationController?.popViewController(animated: true)
+
+
+                    if let d = response.data{
+                        do {
+                           let decoder = JSONDecoder() //or any other Decoder
+                           decoder.dateDecodingStrategy = .iso8601
+                           
+                           self.alarmReportDTO  = try decoder.decode(AlarmReportDTO.self, from: d)
+                           self.alarmReportReasonDTO = self.alarmReportDTO?.alarmReportReasonDTO
+                           
+                           self.reloadForm()
+
+                        } catch {
+                           print(error)
+                           
+                           let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                            errorAlertMessage.addAction(okAction);
+                            self.present(errorAlertMessage, animated: true, completion: nil)
+                        }
+                    }
                     //self.dismiss(animated: true, completion: nil)
                 }))
                 
@@ -386,21 +459,127 @@ class ReportAlarmViewController : FormViewController {
         }
     }
 }
+
+
+extension ReportAlarmViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate, reloadDelegate {
+
+func openCamera()
+{
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = UIImagePickerController.SourceType.camera
+        imagePicker.allowsEditing = true
+        imagePicker.mediaTypes = ["public.image"]
+        
+        
+        self.present(imagePicker, animated: true, completion: nil)
+    }
+    else
+    {
+        let alert  = UIAlertController(title: "Warning", message: "You don't have camera", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+    
+    func openGallery(sourceType: UIImagePickerController.SourceType)
+    {
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary){
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+            imagePicker.sourceType = sourceType
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        else
+        {
+            let alert  = UIAlertController(title: "Warning", message: "You don't have permission to access gallery.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+
+    //MARK:-- ImagePicker delegate
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+            guard let image = info[.editedImage] as? UIImage else {
+                return
+            }
+            
+
+            picker.dismiss(animated: true) {
+                let commentPhoto = CommentPhotoViewController()
+                commentPhoto.selectedImage = image
+                commentPhoto.alarmReportDTO = self.alarmReportDTO!
+                commentPhoto.mode = .new
+                commentPhoto.delegate = self
+                let nav = UINavigationController(rootViewController: commentPhoto)
+                UIApplication.topViewController()?.present(nav, animated: true, completion: nil)
+
+                //self.present(nav, animated: true, completion: nil);
+            }
+    }
+    
+    
+}
+
+extension UIApplication {
+    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let nav = base as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController {
+            if let selected = tab.selectedViewController {
+                return topViewController(base: selected)
+            }
+        }
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return base
+    }
+}
+
+
+
+/*
+
 extension ReportAlarmViewController: ImagePickerDelegate, reloadDelegate {
 
     func didSelect(image: UIImage?) {
         guard let image = image else {
             return
         }
-        let commentPhoto = CommentPhotoViewController()
-        commentPhoto.selectedImage = image
-        commentPhoto.alarmReportDTO = self.alarmReportDTO!
-        commentPhoto.mode = .new
-        commentPhoto.delegate = self
 
-        let nav = UINavigationController(rootViewController: commentPhoto)
-        self.present(nav, animated: true, completion: nil)
-        
+        let commentPhoto = CommentPhotoViewController()
+         commentPhoto.selectedImage = image
+         commentPhoto.alarmReportDTO = self.alarmReportDTO!
+         commentPhoto.mode = .new
+         commentPhoto.delegate = self
+         let nav = UINavigationController(rootViewController: commentPhoto)
+         UIApplication.topViewController()?.present(nav, animated: true, completion: nil)
+
+
     }
-    
+
 }
+
+extension UIApplication {
+    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let nav = base as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController {
+            if let selected = tab.selectedViewController {
+                return topViewController(base: selected)
+            }
+        }
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return base
+    }
+}
+*/

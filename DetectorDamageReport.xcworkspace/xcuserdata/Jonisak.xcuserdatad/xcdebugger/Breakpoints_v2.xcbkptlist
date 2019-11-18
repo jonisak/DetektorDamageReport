@@ -14,8 +14,8 @@
             filePath = "DetectorDamageReport/Start/StartViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
             landmarkName = "fetchData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,9 +30,9 @@
             filePath = "DetectorDamageReport/ReportAlarm/ReportAlarmViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
-            landmarkName = "reloadForm()"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "getAlarmReport()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -87,29 +87,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E2957D43-03A0-425B-88DB-71FD6C75FE64"
+            uuid = "363FE392-9FE7-4775-8B9C-BD1811039AC4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DetectorDamageReport/ReportAlarm/ReportAlarmViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "407"
-            endingLineNumber = "407">
+            startingLineNumber = "452"
+            endingLineNumber = "452"
+            landmarkName = "createAlarmReport()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FD85DE8B-8B2B-49FD-AFEB-E4E5DD164844"
+            uuid = "ABF2B196-B5F3-4BDC-80AC-A43E75F15A44"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DetectorDamageReport/ReportAlarm/ReportAlarmViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "407"
-            endingLineNumber = "407">
+            startingLineNumber = "562"
+            endingLineNumber = "562"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

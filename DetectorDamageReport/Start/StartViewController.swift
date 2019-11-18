@@ -36,7 +36,8 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tblView)
-        self.view.addSubview(standAloneIndicator)
+        tblView.addSubview(standAloneIndicator)
+        //self.view.addSubview(standAloneIndicator)
 
         let filterBtn = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(self.openFilterViewController))
         filterBtn.tintColor = UIColor.white
@@ -67,7 +68,6 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tblView.rowHeight = UITableView.automaticDimension
         tblView.estimatedRowHeight = UITableView.automaticDimension
         
-        //tblView.separatorStyle = UITableViewCell.SeparatorStyle.none;
         tblView.separatorStyle = .none;
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
@@ -79,7 +79,6 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
  
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-      //  self.fetchData()
     }
     
     
@@ -118,11 +117,11 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         if self.isLoading {
             return;
         }
-
-        standAloneIndicator.startAnimating()
+        DispatchQueue.main.async {
+            self.standAloneIndicator.startAnimating()
+        }
 
         
-        //let pagingDTO: PagingDTO  = PagingDTO()
         (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.MaxResultCount = 10000
         (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.Page = currentPage
         (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.PageSize = pageSize
@@ -130,9 +129,6 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
         var dict = [String: Any]()
         //var jsonSring = ""
         do {
-          //  let encoder = JSONEncoder()
-          //  let data = try encoder.encode(pagingDTO)
-          //  jsonSring = String(data: data, encoding: .utf8)!
             dict = try (UIApplication.shared.delegate as! AppDelegate).trainFilterDTO.asDictionary()
         }catch {
             print("Unexpected error: \(error).")
@@ -159,7 +155,11 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
             print("Response: \(String(describing: response.response))") // http url response
             print("Result: \(response.result)")                         // response serialization result
             self.isLoading = false;
-            self.standAloneIndicator.stopAnimating()
+            DispatchQueue.main.async {
+                self.standAloneIndicator.stopAnimating()
+                self.tblView.setEmptyMessage("")
+
+            }
 
             if let err = response.error
             {
@@ -170,6 +170,9 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 self.present(errorAlertMessage, animated: true, completion: nil)
                 return;
             }
+            
+            
+            
             
             
             if let d = response.data{
@@ -185,6 +188,14 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     DispatchQueue.main.async {
                             self.tblView.reloadData()
                     }
+                    
+                    if self.trainListDTO.count == 0
+                    {
+                        DispatchQueue.main.async {
+                            self.tblView.setEmptyMessage("Hittade inga tåg")
+                        }
+                    }
+                    
                 } catch {
                     let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -210,7 +221,10 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
              print("Response: \(String(describing: response.response))") // http url response
              print("Result: \(response.result)")                         // response serialization result
 
-            
+            DispatchQueue.main.async {
+                self.tblView.setEmptyMessage("")
+            }
+
              if let err = response.error
              {
                 print(err);
@@ -225,15 +239,16 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.removeAll()
                     let detectors = try decoder.decode([DetectorDTO].self, from: d)
                     (UIApplication.shared.delegate as! AppDelegate).detectornDTOList.append(contentsOf: detectors);
+                    
                  } catch {
                     print(error)
-                    /*
+                    
                     let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
                      let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
                      errorAlertMessage.addAction(okAction);
                      
                      self.present(errorAlertMessage, animated: true, completion: nil)
-                     */
+                     
                  }
                  
              }
@@ -259,7 +274,7 @@ class StartViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if(self.trainListDTO.count==0)
         {
-            self.tblView.setEmptyMessage("Hittade inga tåg")
+            self.tblView.setEmptyMessage("")
 
             return 0;
         }

@@ -13,7 +13,11 @@ struct VehicleDTO: Codable {
     var VehicleNumber : String
     var Speed : Int
     var AxleCount : Int
+    var TagID : String
 
+
+    
+    
     let AxleList: [AxleDTO]
     let WheelDamageMeasureDataVehicleList: [WheelDamageMeasureDataVehicleDTO]
     let AlertList: [AlertDTO]

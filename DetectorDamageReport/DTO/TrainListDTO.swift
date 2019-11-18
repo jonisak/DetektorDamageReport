@@ -20,6 +20,7 @@ struct TrainListDTO: Codable {
     var isWheelDamage:Bool
     var isHotBoxHotWheel:Bool
     var TrainHasAlarmItem:Bool
+    var TrainHasAlarmItemReported:Bool
     var Detector : DetectorDTO?
     
 }

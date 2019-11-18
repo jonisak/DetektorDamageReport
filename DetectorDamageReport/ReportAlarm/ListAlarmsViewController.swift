@@ -165,7 +165,8 @@ class ListAlarmsViewController: UIViewController, UITableViewDelegate, UITableVi
                     self.present(errorAlertMessage, animated: true, completion: nil)
                     return;
                 }
-                
+                self.tblView.setEmptyMessage("")
+
                 
                 if let d = response.data{
                     do {
@@ -179,6 +180,13 @@ class ListAlarmsViewController: UIViewController, UITableViewDelegate, UITableVi
                         }
                         DispatchQueue.main.async {
                                 self.tblView.reloadData()
+                        }
+
+                        if(self.trainListDTO.count == 0)
+                        {
+                            DispatchQueue.main.async {
+                                    self.tblView.setEmptyMessage("Hittade inga tåg")
+                            }
                         }
                     } catch {
                         let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
@@ -211,7 +219,7 @@ class ListAlarmsViewController: UIViewController, UITableViewDelegate, UITableVi
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             if(self.trainListDTO.count==0)
             {
-                self.tblView.setEmptyMessage("Hittade inga tåg")
+                self.tblView.setEmptyMessage("")
 
                 return 0;
             }

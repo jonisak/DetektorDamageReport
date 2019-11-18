@@ -57,11 +57,13 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         standAloneIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true;
         standAloneIndicator.widthAnchor.constraint(equalToConstant: 80).isActive = true;
         
+        /*
         if trainListDTO.TrainHasAlarmItem
         {
             let alarmReportBtn = UIBarButtonItem(title: "Rapportera larm", style: UIBarButtonItem.Style.plain, target: self, action: #selector(openAlarmReport))
             self.navigationItem.rightBarButtonItem = alarmReportBtn
         }
+ */
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -70,6 +72,8 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.fetchData()
         
     }
+    
+    /*
     @objc func openAlarmReport()
     {
         /*
@@ -82,6 +86,8 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
  */
         
     }
+    */
+    
     func fetchData(){
         
         
@@ -121,8 +127,11 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
                     }
                     //}
                 } catch {
+                    let errorAlertMessage = UIAlertController(title: "Ett oväntat fel uppstod", message: error.localizedDescription, preferredStyle: .alert)
+                     let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                     errorAlertMessage.addAction(okAction);
+                     self.present(errorAlertMessage, animated: true, completion: nil)
                     print(error)
-                    
                 }
                 
             }
@@ -211,6 +220,7 @@ class VehicleViewController: UIViewController, UITableViewDelegate, UITableViewD
             labelArr.append(getCellLabel(labelText: "Fordonsnummer: " +  /*String.random(length: 13) */ ve.VehicleNumber, indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
             labelArr.append(getCellLabel(labelText: "Hastighet: " + String(ve.Speed), indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
             labelArr.append(getCellLabel(labelText: "Antal axlar: " + String(ve.AxleCount), indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
+            labelArr.append(getCellLabel(labelText: "Taggnummer: " + String(ve.TagID), indentLevel: IndentLevelLabel.Level0, image: nil,  textColor:nil))
 
             
             if ve.WheelDamageMeasureDataVehicleList.count>0
